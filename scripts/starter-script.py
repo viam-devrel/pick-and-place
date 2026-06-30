@@ -11,9 +11,10 @@ Fill in the TODOs in order. Run after each section to verify before moving on.
 
 Prerequisites:
     python3 --version                                # must be 3.10+
-    python3 -c "import viam; print(viam.__version__)"
     uv add viam-sdk                                  # or: pip install viam-sdk
+    uv run python -c "import viam; print(viam.__version__)"
 """
+
 import asyncio
 
 from viam.robot.client import RobotClient
@@ -31,8 +32,8 @@ from viam.proto.common import (
 from viam.proto.service.motion import Constraints, LinearConstraint
 
 # --- Tuning constants ---------------------------------------------------------
-GRIPPER_LENGTH_MM = 60   # measure from flange to finger tips
-APPROACH_MM = 100        # clearance above the cube top before descending
+GRIPPER_LENGTH_MM = 60  # measure from flange to finger tips
+APPROACH_MM = 100  # clearance above the cube top before descending
 
 
 def offset_pose(pose: Pose, z_offset_mm: float) -> Pose:
@@ -138,9 +139,9 @@ async def main() -> None:
         # Hybrid approach: motion.move for the pick (Cartesian precision),
         # arm-position-saver switches for the place (pre-measured, reliable).
         #
-        # await motion.move("gripper-1", PoseInFrame("world", approach_pose))
+        # await motion.move("gripper-1", PoseInFrame(reference_frame="world", pose=approach_pose))
         # await gripper.open()
-        # await motion.move("gripper-1", PoseInFrame("world", grasp_pose))
+        # await motion.move("gripper-1", PoseInFrame(reference_frame="world", pose=grasp_pose))
         # await gripper.grab()
         # await asyncio.sleep(0.3)
         # await travel.set_position(2)

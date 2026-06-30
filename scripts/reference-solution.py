@@ -16,6 +16,7 @@ constants and the offset math before running near people or equipment, and keep
 the LinearConstraint on the final descent so the arm comes straight down onto
 the block instead of arcing into it.
 """
+
 import asyncio
 
 from viam.robot.client import RobotClient
@@ -28,9 +29,9 @@ from viam.proto.common import PoseInFrame, Pose
 from viam.proto.service.motion import Constraints, LinearConstraint
 
 # --- Tuning constants ---------------------------------------------------------
-GRIPPER_LENGTH_MM = 60   # measure from flange to finger tips
-APPROACH_MM = 100        # clearance above the block top before descending
-SETTLE_S = 0.3           # finger gripper settle time after grab
+GRIPPER_LENGTH_MM = 60  # measure from flange to finger tips
+APPROACH_MM = 100  # clearance above the block top before descending
+SETTLE_S = 0.3  # finger gripper settle time after grab
 
 # --- Connection details (from the Connect tab -> Python SDK) ------------------
 MACHINE_ADDRESS = "<paste from Connect tab>"
@@ -72,7 +73,9 @@ async def connect() -> RobotClient:
     )
 
 
-async def run_static_sequence(home, approach, grasp, travel, place_bin, gripper) -> None:
+async def run_static_sequence(
+    home, approach, grasp, travel, place_bin, gripper
+) -> None:
     """The Phase 3 sequence, driven from code. SetPosition(2) executes a saved pose."""
     await home.set_position(2)
     await approach.set_position(2)
@@ -87,8 +90,9 @@ async def run_static_sequence(home, approach, grasp, travel, place_bin, gripper)
     print("Static sequence complete")
 
 
-async def pick_and_place(machine, arm, gripper, motion, vision,
-                         home, travel, place_bin) -> bool:
+async def pick_and_place(
+    machine, arm, gripper, motion, vision, home, travel, place_bin
+) -> bool:
     """One perception-guided pick-and-place cycle. Returns True if a block was sorted."""
     # 1. Observe from home so the wrist-mounted camera frame is in a known position.
     await home.set_position(2)
@@ -123,6 +127,7 @@ async def pick_and_place(machine, arm, gripper, motion, vision,
         destination=PoseInFrame(reference_frame="world", pose=approach_pose),
     )
     await gripper.open()
+    await asyncio.sleep(SETTLE_S)
     await motion.move(
         component_name=GRIPPER_NAME,
         destination=PoseInFrame(reference_frame="world", pose=grasp_pose),
