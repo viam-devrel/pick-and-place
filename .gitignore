@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# uv
+uv.lock
+
+# Local connection details — never commit API keys
+.env
+*.local.py

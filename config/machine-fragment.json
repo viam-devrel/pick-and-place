@@ -1,0 +1,119 @@
+{
+  "modules": [
+    {
+      "type": "registry",
+      "name": "viam_ufactory",
+      "module_id": "viam:ufactory",
+      "version": "latest"
+    },
+    {
+      "type": "registry",
+      "name": "viam_camera-realsense",
+      "module_id": "viam:camera-realsense",
+      "version": "latest"
+    },
+    {
+      "type": "registry",
+      "name": "devrel_shape-finder",
+      "module_id": "devrel:shape-finder",
+      "version": "latest"
+    },
+    {
+      "type": "registry",
+      "name": "erh_vmodutils",
+      "module_id": "erh:vmodutils",
+      "version": "latest"
+    }
+  ],
+  "components": [
+    {
+      "name": "arm-1",
+      "api": "rdk:component:arm",
+      "model": "viam:ufactory:xArm6",
+      "attributes": {
+        "host": "REPLACE_WITH_ARM_IP",
+        "port": 502,
+        "speed_degs_per_sec": 60,
+        "acceleration_degs_per_sec_per_sec": 100
+      }
+    },
+    {
+      "name": "gripper-1",
+      "api": "rdk:component:gripper",
+      "model": "viam:ufactory:gripper",
+      "attributes": {
+        "arm": "arm-1"
+      },
+      "depends_on": ["arm-1"]
+    },
+    {
+      "name": "cam-1",
+      "api": "rdk:component:camera",
+      "model": "viam:camera:realsense",
+      "attributes": {
+        "sensors": ["color", "depth"],
+        "width_px": 640,
+        "height_px": 480
+      }
+    },
+
+    {
+      "name": "home-pose",
+      "api": "rdk:component:switch",
+      "model": "erh:vmodutils:arm-position-saver",
+      "attributes": { "arm": "arm-1" },
+      "depends_on": ["arm-1"]
+    },
+    {
+      "name": "approach-pose",
+      "api": "rdk:component:switch",
+      "model": "erh:vmodutils:arm-position-saver",
+      "attributes": { "arm": "arm-1" },
+      "depends_on": ["arm-1"]
+    },
+    {
+      "name": "grasp-pose",
+      "api": "rdk:component:switch",
+      "model": "erh:vmodutils:arm-position-saver",
+      "attributes": { "arm": "arm-1" },
+      "depends_on": ["arm-1"]
+    },
+    {
+      "name": "travel-pose",
+      "api": "rdk:component:switch",
+      "model": "erh:vmodutils:arm-position-saver",
+      "attributes": { "arm": "arm-1" },
+      "depends_on": ["arm-1"]
+    },
+    {
+      "name": "place-pose",
+      "api": "rdk:component:switch",
+      "model": "erh:vmodutils:arm-position-saver",
+      "attributes": { "arm": "arm-1" },
+      "depends_on": ["arm-1"]
+    }
+  ],
+  "services": [
+    {
+      "name": "shape-detector",
+      "api": "rdk:service:vision",
+      "model": "devrel:shape-finder:detector",
+      "attributes": {
+        "camera_name": "cam-1"
+      },
+      "depends_on": ["cam-1"]
+    },
+    {
+      "name": "vision-segment",
+      "api": "rdk:service:vision",
+      "model": "viam:vision:detections-to-segments",
+      "attributes": {
+        "detector_name": "shape-detector",
+        "confidence_threshold_pct": 0.5,
+        "mean_k": 50,
+        "sigma": 1.5
+      },
+      "depends_on": ["shape-detector"]
+    }
+  ]
+}
