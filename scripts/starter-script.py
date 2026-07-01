@@ -23,16 +23,10 @@ from viam.components.gripper import Gripper
 from viam.components.switch import Switch
 from viam.services.motion import MotionClient
 from viam.services.vision import VisionClient
-from viam.proto.common import (
-    PoseInFrame,
-    Pose,
-    WorldState,
-    GeometriesInFrame,
-)
-from viam.proto.service.motion import Constraints, LinearConstraint
+from viam.proto.common import PoseInFrame, Pose
 
 # --- Tuning constants ---------------------------------------------------------
-GRIPPER_LENGTH_MM = 60  # measure from flange to finger tips
+GRIPPER_LENGTH_MM = 60  # offset from the gripper's claw-geometry TCP to the real fingertip contact point
 APPROACH_MM = 100  # clearance above the cube top before descending
 
 
@@ -93,7 +87,7 @@ async def main() -> None:
         approach = Switch.from_robot(machine, APPROACH_POSE)
         grasp = Switch.from_robot(machine, GRASP_POSE)
         travel = Switch.from_robot(machine, TRAVEL_POSE)
-        place_bin = Switch.from_robot(machine, PLACE_POSE)
+        place_pose = Switch.from_robot(machine, PLACE_POSE)
 
         # TODO 4: run the static sequence (Phase 4.4).
         # Same order you tested manually from the Control tab in Phase 3.
@@ -105,12 +99,12 @@ async def main() -> None:
         await gripper.grab()
         await asyncio.sleep(0.3)  # finger gripper settle
         await travel.set_position(2)
-        await place_bin.set_position(2)
+        await place_pose.set_position(2)
         await gripper.open()
         await home.set_position(2)
         print("Static sequence complete")
 
-        # TODO 5: add perception (Phase 4.9).
+        # TODO 5: add perception (Phase 5.5).
         # Uncomment and complete. Must be at home before detecting because the
         # camera is wrist-mounted — its frame moves with the arm.
         #
@@ -130,12 +124,17 @@ async def main() -> None:
         # )
         # obj_in_world = await machine.transform_pose(obj_in_cam, "world")
 
-        # TODO 6: compute the approach and grasp poses (Phase 4.10).
+        # TODO 6: compute the approach and grasp poses (Phase 5.6).
+        # The approach pose is worked for you — a clearance standoff above the block:
+        #     approach_pose = offset_pose(obj_in_world.pose, APPROACH_MM)
         #
-        # approach_pose = offset_pose(obj_in_world.pose, APPROACH_MM)
-        # grasp_pose = offset_pose(obj_in_world.pose, GRIPPER_LENGTH_MM)
+        # Now YOU compute the grasp pose. motion.move drives the gripper-1 frame
+        # (the gripper's TCP, already offset down the arm) to the target — so the
+        # grasp offset is the gripper-TCP-to-fingertip depth (GRIPPER_LENGTH_MM),
+        # not the whole arm reach. Fill in the offset:
+        #     grasp_pose = offset_pose(obj_in_world.pose, ___)   # TODO: your offset
 
-        # TODO 7: run the full perception-guided pick loop (Phase 4.10).
+        # TODO 7: run the full perception-guided pick loop (Phase 5.6).
         # Hybrid approach: motion.move for the pick (Cartesian precision),
         # arm-position-saver switches for the place (pre-measured, reliable).
         #
@@ -145,7 +144,7 @@ async def main() -> None:
         # await gripper.grab()
         # await asyncio.sleep(0.3)
         # await travel.set_position(2)
-        # await place_bin.set_position(2)
+        # await place_pose.set_position(2)
         # await gripper.open()
         # await home.set_position(2)
 
