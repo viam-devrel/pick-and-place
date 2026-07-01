@@ -15,15 +15,15 @@ tutorial `_index.md` (overview + prerequisites gate + entry paths). Orientation 
 that a presenter delivers live must be carried by the `_index` prose for self-serve.
 
 **Decisions / action items:**
-- [ ] **Lift the two-milestone framing into `_index`.** Make explicit that Phase 4 (drive the
+- [x] **Lift the two-milestone framing into `_index`.** Make explicit that Phase 4 (drive the
   robot from code) is a real, bankable win and Phase 5 (perception) is milestone two. This is
   the psychological safety net for learners who might bounce when perception gets hard.
-- [ ] **Add helpful links for completing the prerequisites** (Python 3.10+, viam-sdk, terminal,
+- [x] **Add helpful links for completing the prerequisites** (Python 3.10+, viam-sdk, terminal,
   account/machine access) directly in the `_index` prerequisites section.
-- [ ] **Hardware context is handled by links, not a tour.** The self-serve learner gets hardware
+- [x] **Hardware context is handled by links, not a tour.** The self-serve learner gets hardware
   context from the setup-guide link and hardware-overview resources already planned — no separate
   "hardware tour" section needed in `_index`. (Resolves the "0.3 has no self-serve home" gap.)
-- [ ] **Make login/machine-access a prerequisite.** Move "log in, find your machine, confirm Live"
+- [x] **Make login/machine-access a prerequisite.** Move "log in, find your machine, confirm Live"
   into the prerequisites checklist rather than an in-tutorial step — keeps the tutorial body focused
   on doing, and mirrors how login-as-prereq helps timing in the facilitated version.
 
@@ -36,15 +36,15 @@ before any hands-on payoff. Plan currently says "no checkpoints (no live interac
 we are overturning that stance for self-serve.
 
 **Decisions / action items:**
-- [ ] **Add live "click around the app" interactions.** Ground each concept in the learner's real
+- [x] **Add live "click around the app" interactions.** Ground each concept in the learner's real
   machine (e.g. open CONFIGURE, find `arm-1`, read its `namespace:family:model`). Live interaction
   is necessary to keep engagement high in self-serve — overrides the "no live interactions yet" note.
-- [ ] **Keep the perception-pipeline preview in the dependency graph (1.7).** Use `shape-detector`
+- [x] **Keep the perception-pipeline preview in the dependency graph (1.7).** Use `shape-detector`
   and `vision-segment` as concrete examples of services / composing resources, grounding the abstract
   "services" idea in something real they'll build later. Foreshadowing is intentional and fine.
-- [ ] **Add a self-check.** Close the loop with "you should now be able to answer the three questions
+- [x] **Add a self-check.** Close the loop with "you should now be able to answer the three questions
   from the top — if not, re-skim." Lets self-serve learners gauge readiness before Phase 2.
-- [ ] **Clarify builtin (RDK/viam-server) models vs. module-provided models.** Explain that some
+- [x] **Clarify builtin (RDK/viam-server) models vs. module-provided models.** Explain that some
   resources are builtin to viam-server and most additional functionality comes from modules, and how
   modules interact with viam-server. Ground it by having the learner watch the module download + start
   after configuring the uFactory xArm module. (Sequencing/home for this "watch the module download"
@@ -56,13 +56,13 @@ we are overturning that stance for self-serve.
 
 This overturns an assumption baked into the original `pick-n-place-tutorial-plan.md`. Apply everywhere:
 
-- [ ] **Resources are NEVER pre-configured.** Learners configure every resource themselves, by hand —
+- [x] **Resources are NEVER pre-configured.** Learners configure every resource themselves, by hand —
   this is core hands-on Viam skill-building, not friction to remove. Fix any "what's pre-configured" /
   "pre-provisioned resources" framing.
-- [ ] **Reframe `machine-fragment.json` as a reference, not an import.** It exists so learners can
+- [x] **Reframe `machine-fragment.json` as a reference, not an import.** It exists so learners can
   **check their work** against a known-good config — NOT to skip configuration by importing it. Correct
   the plan's "highest-priority asset — removes the manually-add-resources friction" characterization.
-- [ ] **Distinguish hardware provisioning from resource configuration** in `_index`/paths. Physical
+- [x] **Distinguish hardware provisioning from resource configuration** in `_index`/paths. Physical
   hardware + viam-agent/server running may be pre-provisioned (or done via setup guide), but component/
   service configuration is always the learner's hands-on work.
 
@@ -74,14 +74,14 @@ Context: first hands-on phase; should feel like relief after Phase 1 theory. Tes
 self-serve material (click → observe → verify).
 
 **Decisions / action items:**
-- [ ] **Learner configures all hardware resources by hand** (`arm-1`, `gripper-1`, `cam-1`). Retitle/
+- [x] **Learner configures all hardware resources by hand** (`arm-1`, `gripper-1`, `cam-1`). Retitle/
   reframe away from "what's pre-configured." This phase teaches the add-a-resource flow, not a tour.
-- [ ] **Configuring the `viam:ufactory:xArm6` arm is where the module-download moment lands** (delivers
+- [x] **Configuring the `viam:ufactory:xArm6` arm is where the module-download moment lands** (delivers
   Phase 1 #4): learner adds the arm, watches viam-server download + start the module live.
-- [ ] **3D scene tab gets an explicit active task:** "jog joint 1 and watch the `cam-1` frame move with
+- [x] **3D scene tab gets an explicit active task:** "jog joint 1 and watch the `cam-1` frame move with
   the arm" — this is where the wrist-mounted-camera insight lands (load-bearing for Phase 5's detect-
   from-home rule).
-- [ ] **Gripper card active task for `IsHoldingSomething`:** have the learner place a block between the
+- [x] **Gripper card active task for `IsHoldingSomething`:** have the learner place a block between the
   gripper fingers, press Grab, and observe the resulting `IsHoldingSomething` status. Consider adding a
   gripper checkpoint for symmetry with camera/arm.
 
@@ -94,20 +94,20 @@ the tedium-and-gotcha valley (5 hand-built switches, SetPosition 1-vs-2 trap). D
 tangible outcome yet: a working static pick-and-place sequence.
 
 **Decisions / action items:**
-- [ ] **Teach how frame geometries are configured, and have learners measure their own workspace.**
+- [x] **Teach how frame geometries are configured, and have learners measure their own workspace.**
   This replaces the facilitator-provided dimensions (self-serve has no facilitator). Spend real time on
   measuring the table + other obstacles and translating those measurements into geometry config. This is
   the self-serve home for the obstacle/table dimensions gap.
-- [ ] **Frame safety walls as a production-motion feature, modeled as needed per workspace.** Note that
+- [x] **Frame safety walls as a production-motion feature, modeled as needed per workspace.** Note that
   virtual safety walls are configured to fit the learner's own workspace, and pitch them as a demo of the
   motion system's power for real-world/production robot deployments (not just classroom safety).
-- [ ] **Keep the problem-isolation rationale (3.1) as proof of value.** Frame pose-to-pose motion without
+- [x] **Keep the problem-isolation rationale (3.1) as proof of value.** Frame pose-to-pose motion without
   perception as a common, real operational workflow in production workcells — not filler before the "cool"
   perception part.
-- [ ] **Use the app's "duplicate" resource feature to speed up the 5 switches.** Configure pose #1 fully,
+- [x] **Use the app's "duplicate" resource feature to speed up the 5 switches.** Configure pose #1 fully,
   then duplicate for #2–5. Doubles as a nice peek at power-user features. Keep `machine-fragment.json` as
   the check-your-work reference.
-- [ ] (Carry-over) Keep the SetPosition `1`=save / `2`=execute callout prominent, plus an inline
+- [x] (Carry-over) Keep the SetPosition `1`=save / `2`=execute callout prominent, plus an inline
   troubleshooting aside for "SetPosition(2) does nothing" (didn't save first) — no facilitator to unstick.
 
 ---
@@ -118,15 +118,15 @@ Context: conceptually light but operationally the most failure-prone phase for s
 risk is local Python environment setup (uv/pip/version), not the robot code. Milestone 1.
 
 **Decisions / action items:**
-- [ ] **Sell the advantage of Python control code concretely** — beyond asserting the milestone, note
+- [x] **Sell the advantage of Python control code concretely** — beyond asserting the milestone, note
   the real advantages: programmability (loops/branches/logic) AND the ease of translating the Control-tab
   UI controls directly to the SDK method names (the cards map to methods). Make the payoff felt.
-- [ ] **Reference the Connect tab boilerplate for connection code.** Don't emphasize typing the connection
+- [x] **Reference the Connect tab boilerplate for connection code.** Don't emphasize typing the connection
   from scratch — note that the starter script follows a similar structure to the SDK boilerplate the app
   generates in the Connect tab. Learner reads/understands it rather than authoring it.
-- [ ] **Add a secrets-handling note** — don't commit API keys; use the companion repo `.gitignore` or env
+- [x] **Add a secrets-handling note** — don't commit API keys; use the companion repo `.gitignore` or env
   vars. Cheap, and models the production-minded framing.
-- [ ] **Move environment validation into the Phase 0 prerequisites gate** so Phase 4's budget is just
+- [x] **Move environment validation into the Phase 0 prerequisites gate** so Phase 4's budget is just
   connect + run, not install-debugging. Keep uv as the primary path (pins Python, reproducible); pip is
   fallback only. Add a "verify your environment connects" checkpoint (`resource_names`) before robot logic.
 
@@ -140,19 +140,19 @@ likely solo-abandonment point. Internal rhythm (configure+test vision in app →
 working and should be preserved.
 
 **Decisions / action items:**
-- [ ] **Add a home-pose guard clause in the perception code** (return to / assert `home-pose` before
+- [x] **Add a home-pose guard clause in the perception code** (return to / assert `home-pose` before
   every detect) so the wrist-camera "detect from home" rule is structurally enforced, not just documented.
   Prevents the silent plausible-but-wrong-pick-point footgun. Also make it the FIRST entry in the 5.7
   debugging guide.
-- [ ] **Worked explanation for the approach offset; learner practices the gripper-TCP grasp offset.**
+- [x] **Worked explanation for the approach offset; learner practices the gripper-TCP grasp offset.**
   Walk through computing the approach pose fully as a worked example, then have the learner compute the
   grasp/gripper-TCP offset themselves as productive struggle (or vice versa). Don't leave both as a bare TODO.
-- [ ] **Make `motion.move("gripper-1", …)` semantics explicit:** moving `gripper-1` drives the gripper's
+- [x] **Make `motion.move("gripper-1", …)` semantics explicit:** moving `gripper-1` drives the gripper's
   coordinate frame to the destination pose in the world — NOT the end of the arm (which is what the UI's
   MoveToPosition / the arm component API move). Contrast the two directly so the offset math makes sense.
-- [ ] **Motion-planning debugging maps symptom → 3D scene tab** (what to look for), with a forward-link
+- [x] **Motion-planning debugging maps symptom → 3D scene tab** (what to look for), with a forward-link
   back to Phase 3 obstacle/safety-wall config (skipping it comes back to bite here).
-- [ ] **Add more granular sub-checkpoints:** detector works → transform yields sane world coords →
+- [x] **Add more granular sub-checkpoints:** detector works → transform yields sane world coords →
   approach reachable → grasp succeeds. More gates = better self-diagnosis for a stuck solo learner.
 
 ---
@@ -164,7 +164,7 @@ inverts (instant local runs → ~1 min cloud build). The `from_robot` ↔ `cast 
 callout is the pedagogical centerpiece and should stay front-and-center.
 
 **Decisions / action items:**
-- [ ] **CRITICAL API CORRECTION — the plan's `transform_pose`-in-module approach is fabricated.**
+- [x] **CRITICAL API CORRECTION — the plan's `transform_pose`-in-module approach is fabricated.**
   There is **no injected `FrameSystemClient`** (that API does not exist). Replace the plan block
   (`pick-n-place-tutorial-plan.md` lines ~238–254) entirely. The correct pattern (per
   https://docs.viam.com/build-modules/platform-apis/#use-the-machine-management-api-from-a-module):
@@ -186,15 +186,15 @@ callout is the pedagogical centerpiece and should stay front-and-center.
   ```
   Note this is the OPPOSITE of the plan's "not a second RobotClient connection" claim — the recommended
   approach IS an in-module RobotClient (just exactly one, reused). Don't hardcode creds; use the env vars.
-- [ ] **Be honest that it's "mostly packaging + one real change."** The `transform_pose` access genuinely
+- [x] **Be honest that it's "mostly packaging + one real change."** The `transform_pose` access genuinely
   changes (env-var RobotClient inside the module), so don't let the Phase 4.1 "same logic, different entry
   point" promise set a trap.
-- [ ] **Tier the scope.** Minimal viable module (repackage + `do_command`, trigger manually) as the core
+- [x] **Tier the scope.** Minimal viable module (repackage + `do_command`, trigger manually) as the core
   optional path; scheduled jobs + autonomous operation as an explicit "level 2." Gives a tired learner a
   low-effort on-ramp.
-- [ ] **Strong "why bother?" framing** since it's optional — explicit "you'd want this when… (survives
+- [x] **Strong "why bother?" framing** since it's optional — explicit "you'd want this when… (survives
   disconnection, auto-restart, OTA deploy, runs on a schedule)" so learners self-select instead of trudging.
-- [ ] **Use the plan's time estimate** (not the slides' 13 min) for the self-serve reading estimate.
+- [x] **Use the plan's time estimate** (not the slides' 13 min) for the self-serve reading estimate.
 
 ---
 

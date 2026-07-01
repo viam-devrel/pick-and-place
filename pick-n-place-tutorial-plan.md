@@ -129,7 +129,7 @@ Needs accompanying CSS. Usage:
 
 ```markdown
 {{</* checkpoint */>}}
-Run `python3 -c "import viam; print(viam.__version__)"`.
+Run `uv run python -c "import viam; print(viam.__version__)"`.
 You should see a version number. If you see `ModuleNotFoundError`, return to Prerequisites.
 {{</* /checkpoint */>}}
 ```
@@ -186,7 +186,7 @@ pick-and-place/
 - **Prerequisites checklist with verification commands AND helpful links** for completing each: Python 3.10+, `viam-sdk`, a working terminal, and a Viam account with an accessible machine. Include links to install/setup resources for each prerequisite.
 - **Login/machine-access is a prerequisite, not an in-tutorial step:** "log in at app.viam.com, find your machine, confirm the green Live indicator" belongs in this checklist so the tutorial body stays focused on doing.
 - **Environment validation is part of the prerequisites gate:** confirm a working Python env (uv recommended) that can `import viam` BEFORE Phase 4, so Phase 4 is just connect + run.
-- Hardware context is delivered via links (setup guide + hardware-overview), not a separate tour section
+- Hardware context is delivered via the setup-guide link and the header image (`hardware-overview.jpg`) on this page, not a separate tour section
 - Two explicit paths (note: only physical hardware + viam-agent/server may be pre-provisioned — resource configuration is always the learner's hands-on work): "Physical hardware ready → start at Phase 1" / "Provisioning your own hardware → complete the setup guide first"
 - Link to setup guide: `/guides/hardware-setup/xarm6-pick-and-place/`
 - Link to companion repo
@@ -204,12 +204,11 @@ pick-and-place/
 
 - Content: CONFIGURE tab walkthrough, learner configures each hardware resource by hand (resource table as target state), CONTROL tab test cards, 3D scene tab
 - Vision pipeline is NOT configured here — it moves to Phase 5, right before the perception code that uses it
-- Checkpoints after: camera test card, arm test card
+- Checkpoints after: camera test card, arm test card, gripper test card
 - Wrist-mounted camera callout: camera frame moves with arm; must detect from home pose
 - **Configuring the `viam:ufactory:xArm6` arm is the module-download moment** (delivers the Phase 1 builtin-vs-module lesson): learner adds the arm and watches viam-server download + start the module live.
 - **3D scene tab active task:** "jog joint 1 and watch the `cam-1` frame move with the arm" — this is where the wrist-mounted-camera insight lands (load-bearing for Phase 5's detect-from-home rule).
 - **Gripper card active task for `IsHoldingSomething`:** learner places a block between the gripper fingers, presses Grab, and observes the resulting status.
-- Add a gripper checkpoint for symmetry with the camera/arm checkpoints.
 - Estimated reading time + interaction: 20 min
 
 ### `03-static-positions.md`
@@ -235,7 +234,7 @@ pick-and-place/
   uv run python starter-script.py
   ```
 - **Reference the Connect-tab boilerplate:** the starter script follows a similar structure to the SDK boilerplate the app generates in the Connect tab — learner reads/understands the connection block rather than authoring it from scratch.
-- Starter script linked from companion repo — students copy it, not the Connect tab snippet, for Phase 4 (Connect tab snippet used only for the initial connection test in step 1)
+- Learners obtain the whole companion `scripts/` project (clone or download — `starter-script.py` plus its `pyproject.toml`/`.python-version`, so `uv run` resolves deps), not just the bare script; use it rather than the Connect tab snippet for Phase 4 (Connect tab snippet used only for the initial connection test in step 1)
 - **Secrets-handling note:** don't commit API keys; use the companion repo `.gitignore` or env vars.
 - Obstacles are NOT passed in code — they live in the machine config (Phase 3) and apply to every `motion.move` automatically; no runtime WorldState in the tutorial
 - Checkpoints after: `resource_names` prints all resources, static sequence runs end-to-end from Python
@@ -243,7 +242,7 @@ pick-and-place/
 
 ### `05-perception-guided-picking.md`
 
-- Content: configure the vision pipeline (shape-detector → detections-to-segments) + Control-tab test, frame system + `transform_pose`, perception loop, hybrid pick (`motion.move`) + place (saved switch), debugging guide
+- Content: configure the vision pipeline (shape-detector → `vision-segment`, model `detections-to-segments`) + Control-tab test, frame system + `transform_pose`, perception loop, hybrid pick (`motion.move`) + place (saved switch), debugging guide
 - Vision pipeline is configured here, right before the code that uses it (not in Phase 2)
 - Wrist-mounted camera callout: must detect from `home-pose` or the world-frame transform is wrong — the most common cause of drifting pick points
 - **Home-pose guard clause in the perception code:** return to / assert `home-pose` before every detect, so the wrist-camera "detect from home" rule is structurally enforced (prevents the silent plausible-but-wrong pick-point footgun). Make it the FIRST entry in the debugging guide.
@@ -258,7 +257,7 @@ pick-and-place/
   ```
 - **Worked approach-offset; learner practices the gripper-TCP grasp offset:** walk through computing the approach pose fully as a worked example, then have the learner compute the grasp/gripper-TCP offset themselves (productive struggle). Don't leave both as a bare TODO.
 - **Make `motion.move("gripper-1", …)` semantics explicit:** it drives the gripper's coordinate frame to the destination pose in the world — NOT the end of the arm (which is what the UI MoveToPosition / the arm component API move). Contrast the two so the offset math makes sense.
-- **Motion-planning debugging maps symptom → 3D scene tab** (what to look for), with a forward-link back to Phase 3 obstacle/safety-wall config (skipping it bites here).
+- **Motion-planning debugging maps symptom → 3D scene tab** (what to look for), with a link back to Phase 3 obstacle/safety-wall config (skipping it bites here).
 - **Granular sub-checkpoints:** detector works → transform yields sane world coords → approach reachable → grasp succeeds (better self-diagnosis for a stuck solo learner).
 - Checkpoints after: detector tested in Control tab, detected object label printed from code, full pick-and-place loop completes
 - Estimated reading time + interaction: 22 min
