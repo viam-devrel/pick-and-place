@@ -206,6 +206,10 @@ pick-and-place/
 - Vision pipeline is NOT configured here — it moves to Phase 5, right before the perception code that uses it
 - Checkpoints after: camera test card, arm test card
 - Wrist-mounted camera callout: camera frame moves with arm; must detect from home pose
+- **Configuring the `viam:ufactory:xArm6` arm is the module-download moment** (delivers the Phase 1 builtin-vs-module lesson): learner adds the arm and watches viam-server download + start the module live.
+- **3D scene tab active task:** "jog joint 1 and watch the `cam-1` frame move with the arm" — this is where the wrist-mounted-camera insight lands (load-bearing for Phase 5's detect-from-home rule).
+- **Gripper card active task for `IsHoldingSomething`:** learner places a block between the gripper fingers, presses Grab, and observes the resulting status.
+- Add a gripper checkpoint for symmetry with the camera/arm checkpoints.
 - Estimated reading time + interaction: 20 min
 
 ### `03-static-positions.md`
