@@ -1,5 +1,5 @@
 {
-  "_README": "WorldState obstacle template for Phase 3. The two obstacle components below register through the erh:vmodutils module and present on the API as grippers, so they show up in resource_names as grippers. Add them to the `components` array of your machine (or the imported fragment). Replace every REPLACE_WITH_MEASURED value using GetEndPosition over the real workspace. Pose z is the CENTER of the box: half its height. The table sits below world z=0, so its z is negative half-thickness.",
+  "_README": "WorldState obstacle template for Phase 3. The obstacle components below register through the erh:vmodutils module and present on the API as grippers, so they show up in resource_names as grippers. Add them to the `components` array of your machine (or the imported fragment). Replace every REPLACE_WITH_MEASURED value by measuring your own workspace (sample positions with GetEndPosition over the real table). Pose z is the CENTER of the box: half its height. The table sits below world z=0, so its z is negative half-thickness. The safety walls are thin vertical boxes at the workspace boundary — size and place them to fence the arm away from people and equipment. They are a real safety feature and a demo of the motion planner honoring configured obstacles for production deployments.",
 
   "components": [
     {
@@ -21,22 +21,39 @@
       }
     },
     {
-      "name": "sorting-bin",
+      "name": "safety-wall-front",
       "api": "rdk:component:gripper",
-      "model": "erh:vmodutils:obstacle-open-box",
+      "model": "erh:vmodutils:obstacle",
       "attributes": {
-        "length": 210,
-        "width": 150,
-        "height": 25,
-        "thickness": 1,
-        "to_move": "gripper-1",
-        "offset": 100,
-        "translation": {
-          "x": "REPLACE_WITH_MEASURED_BIN_X",
-          "y": "REPLACE_WITH_MEASURED_BIN_Y",
-          "z": 75
-        },
-        "parent": "world"
+        "geometries": [
+          {
+            "label": "safety-wall-front",
+            "type": "box",
+            "x": 1200,
+            "y": 20,
+            "z": 600,
+            "translation": { "x": 0, "y": "REPLACE_WITH_MEASURED_FRONT_Y", "z": 300 },
+            "parent": "world"
+          }
+        ]
+      }
+    },
+    {
+      "name": "safety-wall-side",
+      "api": "rdk:component:gripper",
+      "model": "erh:vmodutils:obstacle",
+      "attributes": {
+        "geometries": [
+          {
+            "label": "safety-wall-side",
+            "type": "box",
+            "x": 20,
+            "y": 800,
+            "z": 600,
+            "translation": { "x": "REPLACE_WITH_MEASURED_SIDE_X", "y": 0, "z": 300 },
+            "parent": "world"
+          }
+        ]
       }
     }
   ]
