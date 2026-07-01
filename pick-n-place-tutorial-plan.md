@@ -216,8 +216,11 @@ pick-and-place/
 
 - Content: why static first (problem isolation rationale), the five key poses, arm-position-saver configuration, WorldState obstacles, static sequence test
 - **arm-position-saver setup must be explicit:** add module from Registry (`erh:vmodutils:arm-position-saver`), configure one switch component per pose with `arm` attribute pointing to `arm-1`, JSON example for each, all five reference the same arm
-- Obstacle geometry: table dimensions provided, safety walls (bin obstacles are out of scope for this workshop)
-- SetPosition API: `1` = save, `2` = execute — callout box, not a footnote
+- **Use the app's "duplicate" resource feature** to create poses #2–5 after configuring #1 fully (a nice peek at power-user features). `machine-fragment.json` remains the check-your-work reference.
+- **Teach how frame geometries are configured, and have learners measure their own workspace** (replaces facilitator-provided dimensions): spend real time on measuring the table + obstacles and translating measurements into geometry config. This is the self-serve source for obstacle/table dimensions.
+- **Safety walls framed as a production-motion feature:** configured to fit the learner's own workspace; pitch virtual safety walls as a demo of the motion system's power for real-world/production deployments, not just classroom safety. (Bin obstacles are out of scope.)
+- **Keep the problem-isolation rationale as proof of value:** pose-to-pose motion without perception is a common real operational workflow in production workcells — not filler before perception.
+- SetPosition API: `1` = save, `2` = execute — callout box, not a footnote — PLUS an inline troubleshooting aside for "SetPosition(2) does nothing" (didn't save first).
 - Checkpoints after: each pose saved and verified, full static sequence completes without LOGS errors
 - Estimated reading time + interaction: 20 min
 
