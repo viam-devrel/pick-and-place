@@ -205,7 +205,7 @@ pick-and-place/
 - Content: CONFIGURE tab walkthrough, learner configures each hardware resource by hand (resource table as target state), CONTROL tab test cards, 3D scene tab
 - Vision pipeline is NOT configured here — it moves to Phase 5, right before the perception code that uses it
 - Checkpoints after: camera test card, arm test card, gripper test card
-- Wrist-mounted camera callout: camera frame moves with arm; must detect from home pose
+- Wrist-mounted camera callout: camera frame moves with arm; must detect from `home-pose`
 - **Configuring the `viam:ufactory:xArm6` arm is the module-download moment** (delivers the Phase 1 builtin-vs-module lesson): learner adds the arm and watches viam-server download + start the module live.
 - **3D scene tab active task:** "jog joint 1 and watch the `cam-1` frame move with the arm" — this is where the wrist-mounted-camera insight lands (load-bearing for Phase 5's detect-from-home rule).
 - **Gripper card active task for `IsHoldingSomething`:** learner places a block between the gripper fingers, presses Grab, and observes the resulting status.
@@ -213,7 +213,7 @@ pick-and-place/
 
 ### `03-static-positions.md`
 
-- Content: why static first (problem isolation rationale), the five key poses, arm-position-saver configuration, WorldState obstacles, static sequence test
+- Content: why static first (problem isolation rationale), the five key poses (`home-pose`, `approach-pose`, `grasp-pose`, `travel-pose`, `place-pose`), arm-position-saver configuration, WorldState obstacles, static sequence test
 - **arm-position-saver setup must be explicit:** add module from Registry (`erh:vmodutils:arm-position-saver`), configure one switch component per pose with `arm` attribute pointing to `arm-1`, JSON example for each, all five reference the same arm
 - **Use the app's "duplicate" resource feature** to create poses #2–5 after configuring #1 fully (a nice peek at power-user features). `machine-fragment.json` remains the check-your-work reference.
 - **Teach how frame geometries are configured, and have learners measure their own workspace** (replaces facilitator-provided dimensions): spend real time on measuring the table + obstacles and translating measurements into geometry config. This is the self-serve source for obstacle/table dimensions.
