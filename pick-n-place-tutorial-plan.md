@@ -246,6 +246,7 @@ pick-and-place/
 - Content: configure the vision pipeline (shape-detector → detections-to-segments) + Control-tab test, frame system + `transform_pose`, perception loop, hybrid pick (`motion.move`) + place (saved switch), debugging guide
 - Vision pipeline is configured here, right before the code that uses it (not in Phase 2)
 - Wrist-mounted camera callout: must detect from `home-pose` or the world-frame transform is wrong — the most common cause of drifting pick points
+- **Home-pose guard clause in the perception code:** return to / assert `home-pose` before every detect, so the wrist-camera "detect from home" rule is structurally enforced (prevents the silent plausible-but-wrong pick-point footgun). Make it the FIRST entry in the debugging guide.
 - Perception API: use `len(o.point_cloud)` not `o.point_cloud.size`:
   ```python
   objects = await vision.get_object_point_clouds("cam-1")
@@ -255,6 +256,10 @@ pick-and-place/
   obj = max(objects, key=lambda o: len(o.point_cloud))
   label = obj.geometries.geometries[0].label
   ```
+- **Worked approach-offset; learner practices the gripper-TCP grasp offset:** walk through computing the approach pose fully as a worked example, then have the learner compute the grasp/gripper-TCP offset themselves (productive struggle). Don't leave both as a bare TODO.
+- **Make `motion.move("gripper-1", …)` semantics explicit:** it drives the gripper's coordinate frame to the destination pose in the world — NOT the end of the arm (which is what the UI MoveToPosition / the arm component API move). Contrast the two so the offset math makes sense.
+- **Motion-planning debugging maps symptom → 3D scene tab** (what to look for), with a forward-link back to Phase 3 obstacle/safety-wall config (skipping it bites here).
+- **Granular sub-checkpoints:** detector works → transform yields sane world coords → approach reachable → grasp succeeds (better self-diagnosis for a stuck solo learner).
 - Checkpoints after: detector tested in Control tab, detected object label printed from code, full pick-and-place loop completes
 - Estimated reading time + interaction: 22 min
 
