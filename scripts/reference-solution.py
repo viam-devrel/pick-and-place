@@ -29,7 +29,7 @@ from viam.proto.common import PoseInFrame, Pose
 from viam.proto.service.motion import Constraints, LinearConstraint
 
 # --- Tuning constants ---------------------------------------------------------
-GRIPPER_LENGTH_MM = 60  # measure from flange to finger tips
+GRIPPER_LENGTH_MM = 60  # offset from the gripper's claw-geometry TCP to the real fingertip contact point
 APPROACH_MM = 100  # clearance above the block top before descending
 SETTLE_S = 0.3  # finger gripper settle time after grab
 
@@ -74,7 +74,7 @@ async def connect() -> RobotClient:
 
 
 async def run_static_sequence(
-    home, approach, grasp, travel, place_bin, gripper
+    home, approach, grasp, travel, place_pose, gripper
 ) -> None:
     """The Phase 3 sequence, driven from code. SetPosition(2) executes a saved pose."""
     await home.set_position(2)
@@ -84,14 +84,14 @@ async def run_static_sequence(
     await gripper.grab()
     await asyncio.sleep(SETTLE_S)
     await travel.set_position(2)
-    await place_bin.set_position(2)
+    await place_pose.set_position(2)
     await gripper.open()
     await home.set_position(2)
     print("Static sequence complete")
 
 
 async def pick_and_place(
-    machine, arm, gripper, motion, vision, home, travel, place_bin
+    machine, arm, gripper, motion, vision, home, travel, place_pose
 ) -> bool:
     """One perception-guided pick-and-place cycle. Returns True if a block was sorted."""
     # 1. Observe from home so the wrist-mounted camera frame is in a known position.
@@ -119,6 +119,7 @@ async def pick_and_place(
     grasp_pose = offset_pose(obj_in_world.pose, GRIPPER_LENGTH_MM)
 
     # 5. Pick: move above, open, descend straight down, grab, lift.
+    # LinearConstraint = the tutorial's optional Phase 5 follow-up: forces a straight-down descent
     linear_down = Constraints(
         linear_constraint=[LinearConstraint(line_tolerance_mm=5.0)]
     )
@@ -140,7 +141,7 @@ async def pick_and_place(
     #    Hybrid approach — motion.move for the pick (Cartesian precision),
     #    saved switches for the place (pre-measured, reliable).
     await travel.set_position(2)
-    await place_bin.set_position(2)
+    await place_pose.set_position(2)
     await gripper.open()
     await home.set_position(2)
     return True
@@ -159,14 +160,14 @@ async def main() -> None:
         approach = Switch.from_robot(machine, APPROACH_POSE)
         grasp = Switch.from_robot(machine, GRASP_POSE)
         travel = Switch.from_robot(machine, TRAVEL_POSE)
-        place_bin = Switch.from_robot(machine, PLACE_POSE)
+        place_pose = Switch.from_robot(machine, PLACE_POSE)
 
         # Validate the hardware loop first.
-        await run_static_sequence(home, approach, grasp, travel, place_bin, gripper)
+        await run_static_sequence(home, approach, grasp, travel, place_pose, gripper)
 
         # Then sort blocks until none remain in view.
         while await pick_and_place(
-            machine, arm, gripper, motion, vision, home, travel, place_bin
+            machine, arm, gripper, motion, vision, home, travel, place_pose
         ):
             pass
         print("Nothing left to sort")
