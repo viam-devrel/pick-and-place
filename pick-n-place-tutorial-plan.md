@@ -247,23 +247,25 @@ pick-and-place/
 
 - Framed as **optional next step**, not a stretch goal — no time pressure framing
 - Content: script vs module comparison, inline module editor walkthrough, `validate_config` + `reconfigure` (dependency injection), accessing `transform_pose` inside a module (see below), `do_command` + scheduled job
-- **`transform_pose` inside a module:** primary approach is `FrameSystemClient` as an injected dependency (not a second `RobotClient` connection):
+- **`transform_pose` inside a module:** there is **no** `FrameSystemClient` and no injected frame-system dependency. A module reaches the machine-management API (including `transform_pose`) by creating a **single, reused `RobotClient` from within the module**, authenticated from environment variables (`VIAM_API_KEY`, `VIAM_API_KEY_ID`, `VIAM_MACHINE_FQDN`) — values the operator sets in the module's environment config, not auto-injected. Reference: https://docs.viam.com/build-modules/platform-apis/#use-the-machine-management-api-from-a-module
   ```python
-  from viam.services.frame_system import FrameSystemClient
+  import os
+  from viam.robot.client import RobotClient
 
-  # validate_config — declare as dependency:
-  FrameSystemClient.get_resource_name("builtin")
+  async def create_robot_client_from_module():
+      opts = RobotClient.Options.with_api_key(
+          api_key=os.environ["VIAM_API_KEY"],
+          api_key_id=os.environ["VIAM_API_KEY_ID"],
+      )
+      return await RobotClient.at_address(os.environ["VIAM_MACHINE_FQDN"], opts)
 
-  # reconfigure — cast and store:
-  self.frame_system = cast(
-      FrameSystemClient,
-      dependencies[FrameSystemClient.get_resource_name("builtin")]
-  )
-
-  # in logic:
-  world_pose = await self.frame_system.transform_pose(obj_in_cam, "world", [])
+  # self.robot_client is initialized to None in __init__/reconfigure
+  # in logic — create once, reuse:
+  if not self.robot_client:
+      self.robot_client = await create_robot_client_from_module()
+  world_pose = await self.robot_client.transform_pose(obj_in_cam, "world")
   ```
-  Note: this replaces `robot.transform_pose()` from the local script. The `robot` variable does not exist in module context.
+  Note: this is the recommended in-module RobotClient pattern (exactly one, reused) — do NOT create a new connection per call, and do NOT hardcode credentials. Close it on module shutdown with `await self.robot_client.close()`.
 - Bridge callout: explicit side-by-side of `from_robot` (local script) vs `cast + get_resource_name` (module), with a note that the resource names are identical in both cases
 - Cloud build time (~1 min for Python modules) stated upfront, not discovered as a surprise
 - Estimated reading time + interaction: 20 min
