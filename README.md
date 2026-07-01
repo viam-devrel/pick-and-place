@@ -97,11 +97,13 @@ these — `.env` and `*.local.py` are gitignored.
 | 1 | Platform mental model | ~15 min | — |
 | 2 | Configure resources + explore the app | ~20 min | `config/machine-fragment.json` |
 | 3 | Static positions + safety obstacles | ~20 min | `config/obstacles-template.json` |
-| 4 | Local Python script *(core goal)* | ~30 min | `scripts/starter-script.py` |
-| 5 | Inline module *(optional)* | ~15 min | `scripts/reference-solution.py` |
+| 4 | Control the robot from Python *(milestone)* | ~15 min | `scripts/starter-script.py` |
+| 5 | Perception-guided picking *(milestone)* | ~22 min | `scripts/starter-script.py` · `scripts/reference-solution.py` |
+| 6 | Inline module *(optional)* | ~13 min | — |
 
-Finishing the local Python script (Phase 4) is a complete success. The module
-(Phase 5) is an optional next step.
+Driving the robot from your own script (Phase 4) is a bankable win, and the
+perception-guided pick (Phase 5) is the full goal. The inline module (Phase 6)
+is an optional next step.
 
 ---
 

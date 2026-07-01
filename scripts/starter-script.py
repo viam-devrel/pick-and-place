@@ -27,7 +27,7 @@ from viam.proto.common import PoseInFrame, Pose
 
 # --- Tuning constants ---------------------------------------------------------
 GRIPPER_LENGTH_MM = 60  # offset from the gripper's claw-geometry TCP to the real fingertip contact point
-APPROACH_MM = 100  # clearance above the cube top before descending
+APPROACH_MM = 100  # clearance above the block top before descending
 
 
 def offset_pose(pose: Pose, z_offset_mm: float) -> Pose:
