@@ -226,16 +226,17 @@ pick-and-place/
 
 ### `04-control-the-robot-from-python.md`
 
-- Content: why script before module (comparison table), uv project setup, Connect tab starter code, static sequence in Python, connection debugging
+- Content: why script before module (comparison table), running the starter script with uv (environment prepared in Prerequisites), Connect tab starter code, static sequence in Python, connection debugging
 - Framing: the "clicking buttons → programming the robot" threshold; perception comes next in Phase 5
-- **uv is the primary recommended path** — pip is a fallback only:
+- **Sell the advantage of Python control code concretely:** programmability (loops/branches/logic) AND the ease of translating the Control-tab UI controls to SDK method names (the cards map to methods). Make the payoff felt, not just asserted.
+- **Division of labor with the prerequisites gate:** the gate (see `_index`) already confirmed Python 3.10+/uv and that the env can `import viam`, so this phase is genuinely just connect + run — no fresh `uv init` here.
+- **uv is the primary recommended path** — pip is a fallback only. With the env prepared in Prerequisites, this phase just runs the script:
   ```bash
-  uv init viam-workshop
-  cd viam-workshop
-  uv add viam-sdk
   uv run python starter-script.py
   ```
+- **Reference the Connect-tab boilerplate:** the starter script follows a similar structure to the SDK boilerplate the app generates in the Connect tab — learner reads/understands the connection block rather than authoring it from scratch.
 - Starter script linked from companion repo — students copy it, not the Connect tab snippet, for Phase 4 (Connect tab snippet used only for the initial connection test in step 1)
+- **Secrets-handling note:** don't commit API keys; use the companion repo `.gitignore` or env vars.
 - Obstacles are NOT passed in code — they live in the machine config (Phase 3) and apply to every `motion.move` automatically; no runtime WorldState in the tutorial
 - Checkpoints after: `resource_names` prints all resources, static sequence runs end-to-end from Python
 - Estimated reading time + interaction: 15 min
