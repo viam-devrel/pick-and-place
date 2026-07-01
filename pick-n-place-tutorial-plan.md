@@ -181,8 +181,12 @@ pick-and-place/
 
 - Header image of complete hardware setup
 - What you'll build (one paragraph)
-- Phase list with time estimates
-- Prerequisites checklist with verification commands
+- **Two-milestone framing (lifted from workshop slide 0.2):** Phase 4 (drive the robot from your own code) is a real, bankable win; Phase 5 (perception) is milestone two. Everyone should leave with at least the Phase 4 script; the module is optional. This is the safety net that keeps learners from bouncing when perception gets hard.
+- Phase list with time estimates (Phases 1–5 core, Phase 6 optional)
+- **Prerequisites checklist with verification commands AND helpful links** for completing each: Python 3.10+, `viam-sdk`, a working terminal, and a Viam account with an accessible machine. Include links to install/setup resources for each prerequisite.
+- **Login/machine-access is a prerequisite, not an in-tutorial step:** "log in at app.viam.com, find your machine, confirm the green Live indicator" belongs in this checklist so the tutorial body stays focused on doing.
+- **Environment validation is part of the prerequisites gate:** confirm a working Python env (uv recommended) that can `import viam` BEFORE Phase 4, so Phase 4 is just connect + run.
+- Hardware context is delivered via links (setup guide + hardware-overview), not a separate tour section
 - Two explicit paths (note: only physical hardware + viam-agent/server may be pre-provisioned — resource configuration is always the learner's hands-on work): "Physical hardware ready → start at Phase 1" / "Provisioning your own hardware → complete the setup guide first"
 - Link to setup guide: `/guides/hardware-setup/xarm6-pick-and-place/`
 - Link to companion repo
