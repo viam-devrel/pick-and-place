@@ -194,8 +194,11 @@ pick-and-place/
 ### `01-platform-mental-model.md`
 
 - Content: three-layer architecture (cloud/agent/server), SDK connection, config-as-source-of-truth, resource model (components vs services), dependency graph
-- No checkpoints (no live interactions yet)
-- Estimated reading time: 15 min
+- **Live grounding interactions throughout (overrides "no live interactions yet"):** have the learner open their own CONFIGURE tab and find `arm-1`, read its `namespace:family:model`, etc. — ground each abstraction in their real machine to keep engagement high.
+- **Keep the perception-pipeline preview in the dependency graph** — use `shape-detector` / `vision-segment` as concrete examples of services and composing resources (intentional foreshadowing of what they build in Phase 5).
+- **Builtin vs. module-provided resources:** explain that some resources are builtin to viam-server (RDK) and most added functionality comes from modules, and how modules interact with viam-server. Ground it by having the learner watch the module download + start after configuring the uFactory xArm module (the config action itself lands in Phase 2).
+- **Self-check** at the end: "you should now be able to answer the three questions from the top — if not, re-skim."
+- Estimated reading time + interaction: 15 min
 
 ### `02-configure-resources.md`
 
