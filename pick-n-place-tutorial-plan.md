@@ -154,7 +154,7 @@ Check whether the existing theme provides a tabs shortcode before implementing. 
 pick-and-place/
   README.md                          # brief description + link to docs tutorial
   config/
-    machine-fragment.json            # complete machine config, import into any machine
+    machine-fragment.json            # known-good machine config for checking your work (not an import)
     obstacles-template.json          # WorldState geometry with placeholder measurements
   scripts/
     pyproject.toml                   # uv project file, viam-sdk dependency declared
@@ -165,7 +165,7 @@ pick-and-place/
     frame-calibration-worksheet.md   # guided measurement doc for camera + gripper frames
 ```
 
-`machine-fragment.json` is the highest-priority asset — it removes the "manually add five switches and two vision services" friction from setup.
+`machine-fragment.json` is a **check-your-work reference**, not an import — learners configure every resource by hand, then compare against this known-good config. It is NOT used to skip configuration.
 
 ---
 
@@ -183,7 +183,7 @@ pick-and-place/
 - What you'll build (one paragraph)
 - Phase list with time estimates
 - Prerequisites checklist with verification commands
-- Two explicit paths: "Hardware pre-provisioned by instructor → start at Phase 1" / "Provisioning your own hardware → complete the setup guide first"
+- Two explicit paths (note: only physical hardware + viam-agent/server may be pre-provisioned — resource configuration is always the learner's hands-on work): "Physical hardware ready → start at Phase 1" / "Provisioning your own hardware → complete the setup guide first"
 - Link to setup guide: `/guides/hardware-setup/xarm6-pick-and-place/`
 - Link to companion repo
 
@@ -195,7 +195,7 @@ pick-and-place/
 
 ### `02-configure-resources.md`
 
-- Content: CONFIGURE tab walkthrough, what's pre-configured (resource table), CONTROL tab test cards, 3D scene tab
+- Content: CONFIGURE tab walkthrough, learner configures each hardware resource by hand (resource table as target state), CONTROL tab test cards, 3D scene tab
 - Vision pipeline is NOT configured here — it moves to Phase 5, right before the perception code that uses it
 - Checkpoints after: camera test card, arm test card
 - Wrist-mounted camera callout: camera frame moves with arm; must detect from home pose
@@ -282,7 +282,7 @@ Key sections:
 1. Bill of materials + physical assembly
 2. Network configuration (static IP, Ethernet, arm controller port)
 3. viam-agent installation + machine registration
-4. Module and resource configuration (or: import `machine-fragment.json`)
+4. Module and resource configuration (compare against `machine-fragment.json` to check your work)
 5. **Frame calibration** — physical measurement procedure for gripper TCP offset and camera extrinsics:
    - Gripper: measure flange face to finger convergence point with calipers → pure Z translation, identity orientation
    - Camera: measure x/y/z from flange center to optical center, measure orientation with known-angle bracket → fill into `frame-calibration-worksheet.md` from companion repo
