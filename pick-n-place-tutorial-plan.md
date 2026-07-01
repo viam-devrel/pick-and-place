@@ -266,6 +266,9 @@ pick-and-place/
 ### `06-inline-module.md`
 
 - Framed as **optional next step**, not a stretch goal — no time pressure framing
+- **Strong "why bother?" framing** since it's optional — explicit "you'd want this when… (survives disconnection, auto-restart, OTA deploy, runs on a schedule)" so learners self-select.
+- **Honest framing — "mostly packaging + one real change":** the module is largely a repackage of the Phase 4–5 script, but the `transform_pose` access genuinely changes (in-module RobotClient from env vars) — surface that so a "just packaging" expectation doesn't set a trap.
+- **Tier the scope:** a minimal viable module (repackage + `do_command`, trigger manually) is the core optional path; scheduled jobs + autonomous operation are an explicit "level 2" for a low-effort on-ramp.
 - Content: script vs module comparison, inline module editor walkthrough, `validate_config` + `reconfigure` (dependency injection), accessing `transform_pose` inside a module (see below), `do_command` + scheduled job
 - **`transform_pose` inside a module:** there is **no** `FrameSystemClient` and no injected frame-system dependency. A module reaches the machine-management API (including `transform_pose`) by creating a **single, reused `RobotClient` from within the module**, authenticated from environment variables (`VIAM_API_KEY`, `VIAM_API_KEY_ID`, `VIAM_MACHINE_FQDN`) — values the operator sets in the module's environment config, not auto-injected. Reference: https://docs.viam.com/build-modules/platform-apis/#use-the-machine-management-api-from-a-module
   ```python
