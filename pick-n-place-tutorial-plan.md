@@ -1,0 +1,313 @@
+# Viam Docs: Tutorials Section — Implementation Plan
+
+## Context
+
+Introducing a `tutorials/` content section to the Viam docs site (Hugo static site, Netlify hosting). The inaugural entry is a self-serve pick-and-place workshop. This plan covers the Hugo infrastructure, file structure, frontmatter schema, shortcodes, and companion repo needed to ship the first tutorial and scaffold the section for future entries.
+
+---
+
+## Decisions
+
+- **Separate hardware provisioning from tutorial content.** Tutorial assumes a live machine. Setup guide is a prerequisite document, not a tutorial phase.
+- **Multi-page tutorial.** One Hugo content page per phase. Prev/next navigation hardcoded in frontmatter (not `.PrevInSection`, which is unreliable with `_index.md` in the sequence).
+- **File naming.** Numeric prefixes (`01-`, `02-`, ...) for automatic sort order — no reliance on `weight` for page ordering within the tutorial.
+- **Module phase framing.** The inline module (now Phase 6) is relabelled "optional" (not "stretch goal") — self-serve learners set their own pace, the facilitated-session framing doesn't apply.
+- **Perception is its own phase.** Phase 4 gets the robot moving from Python (static sequence); Phase 5 adds the vision pipeline + perception code. Splitting protects focus on the hardest concepts and banks a guaranteed Phase 4 win. Obstacles stay in the machine config — no runtime WorldState in the tutorial.
+- **Shortcodes needed.** `checkpoint`, `tabs` (if not already in theme), `code-file` (embeds from companion repo). `checkpoint` is blocking for Phase 3+; others can follow.
+- **GitHub companion repo.** `viam-tutorials/` org or repo, `pick-and-place/` subdirectory. Linked from tutorial prerequisites and Phase 4–5 content.
+- **Section landing page.** Hand-authored card for inaugural tutorial. Automatic list template deferred until second tutorial exists.
+- **URL slug.** `/tutorials/pick-and-place/` with phase pages at `/tutorials/pick-and-place/01-platform-mental-model/` etc. Confirm with existing Hugo `baseURL` and `contentDir` config before writing any internal links.
+
+---
+
+## Repository Changes
+
+### New content directory
+
+```
+content/
+  tutorials/
+    _index.md                            # section landing page
+    pick-and-place/
+      _index.md                          # tutorial overview + prerequisites
+      01-platform-mental-model.md
+      02-configure-resources.md
+      03-static-positions.md
+      04-control-the-robot-from-python.md
+      05-perception-guided-picking.md
+      06-inline-module.md
+```
+
+### New layout (if not covered by existing theme)
+
+```
+layouts/
+  tutorials/
+    list.html          # renders tutorial card grid from frontmatter
+    single.html        # tutorial page: phase nav, prev/next, checkpoint styling
+  shortcodes/
+    checkpoint.html
+    code-file.html
+    tabs.html          # skip if theme already provides
+```
+
+### New static assets
+
+```
+static/
+  tutorials/
+    pick-and-place/
+      hardware-overview.jpg    # photo of complete setup for overview page
+```
+
+### New data file (optional, for card grid rendering)
+
+```
+data/
+  tutorials.yaml    # machine-readable index of all tutorials for landing page
+```
+
+---
+
+## Frontmatter Schema
+
+### Tutorial root (`_index.md`)
+
+```yaml
+---
+title: "Vision-Guided Pick-and-Place with xArm6"
+description: "Build a robot that detects, picks, and sorts coloured cubes using computer vision and motion planning."
+difficulty: beginner          # beginner | intermediate | advanced
+time_estimate: "2 hours"
+hardware:
+  - uFactory xArm6
+  - Intel RealSense D435
+  - uFactory finger gripper
+  - System76 Meerkat
+skills:
+  - manipulation
+  - perception
+  - python-sdk
+setup_guide: "/guides/hardware-setup/xarm6-pick-and-place/"
+draft: false
+weight: 1
+---
+```
+
+### Phase pages
+
+```yaml
+---
+title: "Phase 3: Static Positions and Safety Obstacles"
+description: "Save arm poses and configure WorldState obstacles before adding perception."
+tutorial: "pick-and-place"
+phase: 3
+time_estimate: "20 minutes"
+weight: 30
+prev: "/tutorials/pick-and-place/02-configure-resources/"
+next: "/tutorials/pick-and-place/04-control-the-robot-from-python/"
+---
+```
+
+---
+
+## Shortcodes
+
+### `checkpoint.html` — blocking for Phase 3+
+
+Renders a visually distinct "verify this before continuing" callout. Does not exist in most Hugo themes; must be implemented.
+
+```html
+<!-- layouts/shortcodes/checkpoint.html -->
+<div class="docs-checkpoint">
+  <span class="docs-checkpoint__label">Checkpoint</span>
+  <div class="docs-checkpoint__body">{{ .Inner | markdownify }}</div>
+</div>
+```
+
+Needs accompanying CSS. Usage:
+
+```markdown
+{{</* checkpoint */>}}
+Run `python3 -c "import viam; print(viam.__version__)"`.
+You should see a version number. If you see `ModuleNotFoundError`, return to Prerequisites.
+{{</* /checkpoint */>}}
+```
+
+### `code-file.html` — deferred, not blocking
+
+Embeds code from companion GitHub repo rather than duplicating it in docs. Prevents drift between tutorial content and actual working code. Implement before launch if possible; fall back to inline fenced code blocks if not.
+
+### `tabs.html`
+
+Check whether the existing theme provides a tabs shortcode before implementing. Used for OS-specific commands (macOS vs Linux).
+
+---
+
+## Companion GitHub Repository
+
+**Repo:** `github.com/viam-devrel/tutorials` (or similar — confirm naming convention with DevRel team)
+
+**Subdirectory for this tutorial:** `pick-and-place/`
+
+```
+pick-and-place/
+  README.md                          # brief description + link to docs tutorial
+  config/
+    machine-fragment.json            # complete machine config, import into any machine
+    obstacles-template.json          # WorldState geometry with placeholder measurements
+  scripts/
+    pyproject.toml                   # uv project file, viam-sdk dependency declared
+    .python-version                  # pins Python version (3.10+)
+    starter-script.py                # Phase 4–5 starting point — TODOs in place
+    reference-solution.py            # complete working script — no TODOs
+  setup/
+    frame-calibration-worksheet.md   # guided measurement doc for camera + gripper frames
+```
+
+`machine-fragment.json` is the highest-priority asset — it removes the "manually add five switches and two vision services" friction from setup.
+
+---
+
+## Content Pages: Key Requirements Per Page
+
+### `tutorials/_index.md`
+
+- One-paragraph description of the tutorials section and how it differs from how-to guides (learning by doing, explicit time estimates, verifiable end states)
+- Hand-authored tutorial card for the inaugural entry (title, description, hardware tags, time, difficulty, link)
+- Note: automatic card rendering from `data/tutorials.yaml` or frontmatter deferred until second tutorial
+
+### `pick-and-place/_index.md`
+
+- Header image of complete hardware setup
+- What you'll build (one paragraph)
+- Phase list with time estimates
+- Prerequisites checklist with verification commands
+- Two explicit paths: "Hardware pre-provisioned by instructor → start at Phase 1" / "Provisioning your own hardware → complete the setup guide first"
+- Link to setup guide: `/guides/hardware-setup/xarm6-pick-and-place/`
+- Link to companion repo
+
+### `01-platform-mental-model.md`
+
+- Content: three-layer architecture (cloud/agent/server), SDK connection, config-as-source-of-truth, resource model (components vs services), dependency graph
+- No checkpoints (no live interactions yet)
+- Estimated reading time: 15 min
+
+### `02-configure-resources.md`
+
+- Content: CONFIGURE tab walkthrough, what's pre-configured (resource table), CONTROL tab test cards, 3D scene tab
+- Vision pipeline is NOT configured here — it moves to Phase 5, right before the perception code that uses it
+- Checkpoints after: camera test card, arm test card
+- Wrist-mounted camera callout: camera frame moves with arm; must detect from home pose
+- Estimated reading time + interaction: 20 min
+
+### `03-static-positions.md`
+
+- Content: why static first (problem isolation rationale), the five key poses, arm-position-saver configuration, WorldState obstacles, static sequence test
+- **arm-position-saver setup must be explicit:** add module from Registry (`erh:vmodutils:arm-position-saver`), configure one switch component per pose with `arm` attribute pointing to `arm-1`, JSON example for each, all five reference the same arm
+- Obstacle geometry: table dimensions provided, safety walls (bin obstacles are out of scope for this workshop)
+- SetPosition API: `1` = save, `2` = execute — callout box, not a footnote
+- Checkpoints after: each pose saved and verified, full static sequence completes without LOGS errors
+- Estimated reading time + interaction: 20 min
+
+### `04-control-the-robot-from-python.md`
+
+- Content: why script before module (comparison table), uv project setup, Connect tab starter code, static sequence in Python, connection debugging
+- Framing: the "clicking buttons → programming the robot" threshold; perception comes next in Phase 5
+- **uv is the primary recommended path** — pip is a fallback only:
+  ```bash
+  uv init viam-workshop
+  cd viam-workshop
+  uv add viam-sdk
+  uv run python starter-script.py
+  ```
+- Starter script linked from companion repo — students copy it, not the Connect tab snippet, for Phase 4 (Connect tab snippet used only for the initial connection test in step 1)
+- Obstacles are NOT passed in code — they live in the machine config (Phase 3) and apply to every `motion.move` automatically; no runtime WorldState in the tutorial
+- Checkpoints after: `resource_names` prints all resources, static sequence runs end-to-end from Python
+- Estimated reading time + interaction: 15 min
+
+### `05-perception-guided-picking.md`
+
+- Content: configure the vision pipeline (shape-detector → detections-to-segments) + Control-tab test, frame system + `transform_pose`, perception loop, hybrid pick (`motion.move`) + place (saved switch), debugging guide
+- Vision pipeline is configured here, right before the code that uses it (not in Phase 2)
+- Wrist-mounted camera callout: must detect from `home-pose` or the world-frame transform is wrong — the most common cause of drifting pick points
+- Perception API: use `len(o.point_cloud)` not `o.point_cloud.size`:
+  ```python
+  objects = await vision.get_object_point_clouds("cam-1")
+  if not objects:
+      print("No objects detected")
+      return
+  obj = max(objects, key=lambda o: len(o.point_cloud))
+  label = obj.geometries.geometries[0].label
+  ```
+- Checkpoints after: detector tested in Control tab, detected object label printed from code, full pick-and-place loop completes
+- Estimated reading time + interaction: 22 min
+
+### `06-inline-module.md`
+
+- Framed as **optional next step**, not a stretch goal — no time pressure framing
+- Content: script vs module comparison, inline module editor walkthrough, `validate_config` + `reconfigure` (dependency injection), accessing `transform_pose` inside a module (see below), `do_command` + scheduled job
+- **`transform_pose` inside a module:** primary approach is `FrameSystemClient` as an injected dependency (not a second `RobotClient` connection):
+  ```python
+  from viam.services.frame_system import FrameSystemClient
+
+  # validate_config — declare as dependency:
+  FrameSystemClient.get_resource_name("builtin")
+
+  # reconfigure — cast and store:
+  self.frame_system = cast(
+      FrameSystemClient,
+      dependencies[FrameSystemClient.get_resource_name("builtin")]
+  )
+
+  # in logic:
+  world_pose = await self.frame_system.transform_pose(obj_in_cam, "world", [])
+  ```
+  Note: this replaces `robot.transform_pose()` from the local script. The `robot` variable does not exist in module context.
+- Bridge callout: explicit side-by-side of `from_robot` (local script) vs `cast + get_resource_name` (module), with a note that the resource names are identical in both cases
+- Cloud build time (~1 min for Python modules) stated upfront, not discovered as a surprise
+- Estimated reading time + interaction: 20 min
+
+---
+
+## Separate Prerequisite Document
+
+**Path:** `content/guides/hardware-setup/xarm6-pick-and-place.md`
+
+This is not a tutorial page — it is a how-to guide. Learners who arrive with pre-provisioned hardware skip it entirely.
+
+Key sections:
+1. Bill of materials + physical assembly
+2. Network configuration (static IP, Ethernet, arm controller port)
+3. viam-agent installation + machine registration
+4. Module and resource configuration (or: import `machine-fragment.json`)
+5. **Frame calibration** — physical measurement procedure for gripper TCP offset and camera extrinsics:
+   - Gripper: measure flange face to finger convergence point with calipers → pure Z translation, identity orientation
+   - Camera: measure x/y/z from flange center to optical center, measure orientation with known-angle bracket → fill into `frame-calibration-worksheet.md` from companion repo
+   - Verification: AprilTag at known world position, compare detected pose to expected, iterate
+6. Verification checklist (matches the tutorial's prerequisites gate)
+
+---
+
+## Implementation Order
+
+1. Confirm URL structure with existing Hugo config (`baseURL`, `contentDir`, permalink settings)
+2. Implement `checkpoint` shortcode + CSS
+3. Create `tutorials/_index.md` (section landing page, hand-authored card)
+4. Create `pick-and-place/_index.md` (overview + prerequisites)
+5. Create companion repo skeleton (`README.md`, `pyproject.toml`, placeholder files)
+6. Write Phase pages `01` through `05` (core tutorial, highest priority)
+7. Write Phase page `06` (optional, but ship with initial release)
+8. Write hardware setup guide (can be authored in parallel with phases 4–5)
+9. Populate companion repo: `machine-fragment.json`, `starter-script.py`, `reference-solution.py`, `frame-calibration-worksheet.md`
+10. Implement `code-file` shortcode and update Phase 4–5 code blocks to embed from repo
+11. Add `data/tutorials.yaml` and `layouts/tutorials/list.html` when second tutorial is ready
+
+---
+
+## Open Questions for Claude Code to Flag
+
+- Does the existing Hugo theme already provide `tabs` and `callout`/`note` shortcodes? Audit before implementing duplicates.
+- What is the existing permalink configuration? Confirm that numeric-prefixed filenames (`01-platform-mental-model.md`) produce clean URLs without the prefix in the rendered path, or whether Hugo requires additional permalink config.
+- Is there an existing `guides/` section, or does that directory also need to be created?
+- Does the docs repo use Hugo modules or a vendored theme? Confirm before adding layout overrides — the override path depends on whether the theme is local or remote.

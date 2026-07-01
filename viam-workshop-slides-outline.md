@@ -17,10 +17,11 @@
 | 1 | Platform Mental Model | 15 min |
 | 2 | Configure Resources + Explore the App | 20 min |
 | 3 | Static Positions + Safety Obstacles | 20 min |
-| 4 | Local Python Script | 30 min |
-| 5 | Inline Module *(stretch goal)* | 15 min |
-| 6 | Wrap + Next Steps | 5 min |
-| — | Q&A distributed across phases | 7 min |
+| 4 | Control the Robot from Python | 15 min |
+| 5 | Perception-Guided Picking | 22 min |
+| 6 | Inline Module *(stretch goal)* | 13 min |
+| 7 | Wrap + Next Steps | 5 min |
+| — | Q&A distributed across phases | 2 min |
 | **Total** | | **120 min** |
 
 ---
@@ -37,8 +38,8 @@
 - *Prerequisites required · Hands-on*
 
 **Agenda:** 0 Orientation · 1 Platform Mental Model · 2 Configure Resources ·
-3 Static Positions + Obstacles · 4 Local Python Script · 5 Inline Module *(stretch)* ·
-6 Wrap + Next Steps
+3 Static Positions + Obstacles · 4 Control the Robot from Python · 5 Perception-Guided Picking ·
+6 Inline Module *(stretch)* · 7 Wrap + Next Steps
 
 > Note: Keep this up during setup. Prerequisites (Python 3.10+, viam-sdk, a working terminal) were listed in the invite — confirm verbally that everyone has them before Phase 4.
 
@@ -50,9 +51,9 @@
 2. **Perception-guided script** — add shape detection → 3D localisation → pick-and-place loop
 3. **Inline module** *(stretch)* — convert the working script to a service that runs autonomously on the robot
 
-**Goal: working local script by end of Phase 4. The module is the bonus.**
+**Two milestones: drive the robot from your own code (Phase 4), then perception-guided picking (Phase 5). Everyone should leave with at least the Phase 4 script; the module is the bonus.**
 
-> Note: Emphasise the three-step progression. Students who don't finish the module still leave with a working local script — that's a real success.
+> Note: Frame Phase 4 as the "you're now programming the robot" threshold and Phase 5 as "the robot sees and picks." The Phase 4 static script is a guaranteed win — students who don't reach perception or the module still leave having programmed the robot.
 
 ---
 
@@ -68,7 +69,7 @@
 - viam-agent and viam-server are **already running** on the Meerkat
 - No SSH required today
 
-> Note: Point out the wrist-mounted camera. Because it's on the arm, its frame parent is the arm link — this affects how we transform poses to world frame, which matters in Phase 4.
+> Note: Point out the wrist-mounted camera. Because it's on the arm, its frame parent is the arm link — this affects how we transform poses to world frame, which matters in Phase 5.
 
 ---
 
@@ -80,12 +81,13 @@
 | 1 | Platform Mental Model | 15 min |
 | 2 | Configure Resources + Explore the App | 20 min |
 | 3 | Static Positions + Safety Obstacles | 20 min |
-| 4 | Local Python Script | 30 min |
-| 5 | Inline Module *(stretch goal)* | 15 min |
-| 6 | Wrap + Next Steps | 5 min |
+| 4 | Control the Robot from Python | 15 min |
+| 5 | Perception-Guided Picking | 22 min |
+| 6 | Inline Module *(stretch goal)* | 13 min |
+| 7 | Wrap + Next Steps | 5 min |
 
 - Q&A distributed per phase
-- Goal: working script by end of Phase 4
+- Milestones: robot-driving script (Phase 4) → perception-guided pick (Phase 5)
 
 ---
 
@@ -213,9 +215,9 @@ Resources are composed together to create intelligent pipelines and automation.
 3. **Spawned as a subprocess**, connected via gRPC socket — isolated process; a crash in the module doesn't crash viam-server
 4. **Arm resource is live** in the resource graph
 
-Same mechanism for **hardware drivers** (xArm6 module) and **your control code** (Phase 5).
+Same mechanism for **hardware drivers** (xArm6 module) and **your control code** (Phase 6).
 
-> Note: This is the first look at modules. In Phase 5 the same mechanism packages the student's own control logic. Plant the seed now.
+> Note: This is the first look at modules. In Phase 6 the same mechanism packages the student's own control logic. Plant the seed now.
 
 ---
 
@@ -233,7 +235,7 @@ Same mechanism for **hardware drivers** (xArm6 module) and **your control code**
 
 # PHASE 2 — CONFIGURE RESOURCES + EXPLORE THE APP (20 min)
 
-*Test cards · 3D scene · colour-detection pipeline.*
+*Test cards · 3D scene.*
 
 ---
 
@@ -247,7 +249,7 @@ Same mechanism for **hardware drivers** (xArm6 module) and **your control code**
 | `gripper-1` | gripper | `viam:ufactory:gripper` |
 | `cam-1` | camera | `viam:camera:realsense` |
 
-> Note: Only hardware is configured here. The vision pipeline is added in Phase 4; the pose switches and obstacle geometries are configured in Phase 3.
+> Note: Only hardware is configured here. The vision pipeline is added in Phase 5; the pose switches and obstacle geometries are configured in Phase 3.
 
 ---
 
@@ -269,7 +271,7 @@ Test each component in this order:
 
 Latency is low — peer-to-peer WebRTC, not cloud-proxied.
 
-> Note: Plant the idea that a pixel alone isn't enough to move the arm — you need depth. Point clouds give spatial location. This pays off in Phase 4 when vision-segment fuses RGB + depth.
+> Note: Plant the idea that a pixel alone isn't enough to move the arm — you need depth. Point clouds give spatial location. This pays off in Phase 5 when vision-segment fuses RGB + depth.
 
 ---
 
@@ -279,7 +281,7 @@ Latency is low — peer-to-peer WebRTC, not cloud-proxied.
 - **MoveToJointPositions** — jog joint 4 by +5°, confirm the arm moves, hit Stop
 - **GetEndPosition** — x/y/z in mm + OrientationVector (OX, OY, OZ, Theta)
 
-> Note: Unit importance (degrees by default in UI, radians or degrees in SDK) will come up again in Phase 4. Plant the seed now.
+> Note: Unit importance (degrees by default in UI, radians or degrees in SDK) will come up again in Phase 5. Plant the seed now.
 
 ---
 
@@ -317,7 +319,7 @@ Latency is low — peer-to-peer WebRTC, not cloud-proxied.
 ## [2.7] — Phase 2 Summary
 
 - CONFIGURE tab: all resources visible as cards; JSON underneath
-- 3D scene tab: live frame system and collision geometry — a debugging tool for Phase 4
+- 3D scene tab: live frame system and collision geometry — a debugging tool for Phases 4–5
 - Camera is wrist-mounted — frame moves with the arm
 
 *Questions?*
@@ -359,7 +361,7 @@ Latency is low — peer-to-peer WebRTC, not cloud-proxied.
 
 `approach-pose` and `grasp-pose` share the same x/y — only z differs. The descent between them should be straight down.
 
-> Note: The deck previously titled this "Six Key Poses"; the table lists five, so it has been corrected. A LinearConstraint enforces the straight-down descent in Phase 4. Per-colour bins are an exercise (see [6.2]) — the core flow uses one `place-pose`.
+> Note: Five key poses. A LinearConstraint on the descent (straight-down grasp) and per-colour bins are optional follow-ups (see [7.2]) — the core flow uses one `place-pose`.
 
 ---
 
@@ -381,13 +383,12 @@ Latency is low — peer-to-peer WebRTC, not cloud-proxied.
 
 The motion planner is collision-aware, but it can only avoid what it knows about.
 
-**Without WorldState:** Planner avoids self-collision (arm vs. arm geometry) but has no knowledge of the table, bins, or workspace walls.
+**Without WorldState:** Planner avoids self-collision (arm vs. arm geometry) but has no knowledge of the table or workspace walls.
 
 **With WorldState:** Planner treats configured geometries as hard obstacles — the arm cannot be planned through them. Safer and more predictable.
 
 Obstacles we will configure:
 - **Table surface** — prevents the arm from crashing into the table on any planned path
-- **Sorting bins** — prevents the arm from driving through a bin while transiting
 - **Safety walls (workspace boundary)** — virtual planes; prevent the arm from swinging into students
 
 > Note: The safety walls are a real safety feature — make that concrete for the room.
@@ -396,8 +397,7 @@ Obstacles we will configure:
 
 ## [3.5] — Obstacle Geometry: Measuring and Configuring **[LIVE DEMO]**
 
-**Facilitator provides:** table dimensions, bin dimensions.
-**Students measure:** bin centre position relative to the arm base.
+**Facilitator provides:** table dimensions.
 
 ```json
 // obstacle component config
@@ -406,24 +406,10 @@ Obstacles we will configure:
 ]
 ```
 
-```json
-// obstacle-open-box component config
-{
-  "length": 210,
-  "width": 150,
-  "height": 25,
-  "thickness": 1,
-  "to_move": "gripper-1",
-  "offset": 100
-}
-```
-
-- Measure bin centre x/y: move the arm over the bin → read x, y from GetEndPosition
-- Pose z for the bin = half its height (150mm bin → z = 75)
 - Pose z for the table = -15 (half of 30mm thickness; sits below world z=0)
 - Safety walls: thin boxes at the workspace boundary edges
 
-> Note: Obstacles are `erh:vmodutils:obstacle` / `erh:vmodutils:obstacle-open-box` components. Pose z is the centre of the box geometry. They apply to motion planning automatically once configured.
+> Note: Obstacles are `erh:vmodutils:obstacle` components. Pose z is the centre of the box geometry. They apply to motion planning automatically once configured.
 
 ---
 
@@ -445,13 +431,13 @@ home-pose (2)      → return to start
 
 *Success: the arm completes the full sequence, with no collision errors in the LOGS tab.*
 
-> Note: If motion planning fails at any step, the 3D scene tab shows what the planner sees. Common issues: approach pose too close to the table obstacle, travel pose colliding with bin geometry. Adjust the pose, re-save, re-test.
+> Note: If motion planning fails at any step, the 3D scene tab shows what the planner sees. Common issues: approach pose too close to the table obstacle, or a pose that clips a safety wall. Adjust the pose, re-save, re-test.
 
 ---
 
-# PHASE 4 — LOCAL PYTHON SCRIPT (30 min)
+# PHASE 4 — CONTROL THE ROBOT FROM PYTHON (15 min)
 
-*Fast feedback · `from_robot` · perception loop. Students write a Python script on their laptop that connects to the robot and controls it.*
+*Fast feedback · `RobotClient.at_address` · `from_robot`. Students cross from clicking buttons to programming the robot: connect from their laptop and drive the static sequence in code.*
 
 ---
 
@@ -514,7 +500,7 @@ asyncio.run(main())
 
 Run it. You should see `arm-1`, `gripper-1`, `cam-1`, the poses as Switches, and obstacles as grippers.
 
-> Note: API key is per-student, generated from the machine's Connect tab. The address works over the internet via WebRTC signaling — students don't need to be on the same network as the robot. Note the client variable is `machine` here, matching the Connect-tab snippet.
+> Note: API key is per-student, generated from the machine's Connect tab. The address works over the internet via WebRTC signaling — students don't need to be on the same network as the robot. Note the client variable is `machine` here, matching the Connect-tab snippet. The obstacle components surface as `gripper` resources in `resource_names` — this is expected for these components, not an error.
 
 ---
 
@@ -531,7 +517,7 @@ from viam.components.switch import Switch
     approach  = Switch.from_robot(machine, "approach-pose")
     grasp     = Switch.from_robot(machine, "grasp-pose")
     travel    = Switch.from_robot(machine, "travel-pose")
-    place_bin = Switch.from_robot(machine, "place-pose")
+    place_pose = Switch.from_robot(machine, "place-pose")
 
     await home.set_position(2)
     await approach.set_position(2)
@@ -540,16 +526,33 @@ from viam.components.switch import Switch
     await gripper.grab()
     await asyncio.sleep(0.3)  # finger gripper settle
     await travel.set_position(2)
-    await place_bin.set_position(2); await gripper.open(); await home.set_position(2)
+    await place_pose.set_position(2); await gripper.open(); await home.set_position(2)
 ```
 
 *Same sequence as Phase 3 — now in code. Run it.*
 
-> Note: `from_robot` is the local-script equivalent of dependency injection in a module. In Phase 5, `validate_config + cast()` replaces this. Making that connection explicit helps students understand why modules look the way they do.
+> Note: `from_robot` is the local-script equivalent of dependency injection in a module. In Phase 6, `validate_config + cast()` replaces this. Making that connection explicit helps students understand why modules look the way they do.
 
 ---
 
-## [4.5] — Adding Perception
+## [4.5] — Phase 4 Summary
+
+- `RobotClient.at_address()` + API key → your laptop drives the robot over WebRTC
+- `Type.from_robot(machine, name)` → a handle for every resource; `resource_names` lists them all
+- The static sequence from Phase 3, now in code — same poses, driven by `set_position(2)`
+- `from_robot` is the local-script stand-in for the dependency injection you'll meet in the module
+
+*Milestone: you're now programming the robot. Everything from here builds on this script.*
+
+---
+
+# PHASE 5 — PERCEPTION-GUIDED PICKING (22 min)
+
+*The robot sees and picks. Configure and test the vision pipeline in the app, then localise a detected object in world frame and drive the pick from code.*
+
+---
+
+## [5.1] — Configure the Vision Pipeline
 
 **Vision pipeline (configure these now):**
 
@@ -558,11 +561,11 @@ from viam.components.switch import Switch
 | `shape-detector` | vision | `devrel:shape-finder:detector` |
 | `vision-segment` | vision | `viam:vision:detections-to-segments` |
 
-> Note: This is the vision pipeline configuration — it lives in Phase 4 now (not Phase 2), so students add it right before they use it.
+> Note: This is the vision pipeline configuration — it lives here in Phase 5 (not Phase 2), so students add it right before they use it in code.
 
 ---
 
-## [4.6] — Vision Pipeline: Shape Detection → 3D Segmentation
+## [5.2] — Vision Pipeline: Shape Detection → 3D Segmentation
 
 *(Pipeline diagram with boxes and arrows)*
 
@@ -572,7 +575,7 @@ cam-1 (depth) ──────────────────────
 ```
 
 - `cam-1` provides **RGB** (→ shape-detector) and **depth** (→ vision-segment)
-- `shape-detector` → 2D bounding boxes with shape-colour labels
+- `shape-detector` → 2D bounding boxes with shape labels
 - `vision-segment` fuses 2D boxes with depth → a 3D point cloud per object
 - The **label** on each 3D object from vision-segment is how the pick-and-place logic knows what to target
 
@@ -580,10 +583,10 @@ Independently testable — test `shape-detector` first, then `vision-segment`.
 
 ---
 
-## [4.7] — Vision Pipeline Test **[LIVE DEMO]**
+## [5.3] — Vision Pipeline Test **[LIVE DEMO]**
 
 On `shape-detector`:
-- **GetDetections** → `cam-1` → 2D bounding boxes with shape-colour labels and confidence scores
+- **GetDetections** → `cam-1` → 2D bounding boxes with shape labels and confidence scores
 
 On `vision-segment`:
 - **GetObjectPointClouds** → `cam-1` → 3D objects, each with a point cloud and a label from `shape-detector`
@@ -592,7 +595,7 @@ On `vision-segment`:
 
 ---
 
-## [4.8] — The Frame System: Why Transforms Matter
+## [5.4] — The Frame System: Why Transforms Matter
 
 *(Tree diagram)*
 
@@ -612,7 +615,7 @@ world
 
 ---
 
-## [4.9] — Adding Perception **[LIVE DEMO]**
+## [5.5] — Adding Perception **[LIVE DEMO]**
 
 ```python
 from viam.services.vision import VisionClient
@@ -644,18 +647,16 @@ The `offset_pose` helper is in the starter script — it raises or lowers z by a
 
 ---
 
-## [4.10] — Full Perception-Guided Pick Loop **[LIVE DEMO]**
+## [5.6] — Full Perception-Guided Pick Loop **[LIVE DEMO]**
 
 ```python
-from viam.proto.service.motion import Constraints, LinearConstraint
-
 approach = # determine approach pose from obj_in_world
 grasp    = # determine grasp pose from obj_in_world
 
 # Approach → open → descend → grab → lift
-await motion.move(component_name="gripper-1", destination=PoseInFrame("world", approach))
+await motion.move(component_name="gripper-1", destination=PoseInFrame(reference_frame="world", pose=approach))
 await gripper.open()
-await motion.move(component_name="gripper-1", destination=PoseInFrame("world", grasp))
+await motion.move(component_name="gripper-1", destination=PoseInFrame(reference_frame="world", pose=grasp))
 await gripper.grab()
 await asyncio.sleep(0.3)
 
@@ -672,34 +673,7 @@ await home.set_position(2)         # return for next cycle
 
 ---
 
-## [4.11] — Passing WorldState to the Motion Service
-
-Obstacles in the machine config apply automatically. Pass WorldState programmatically to add per-call dynamic obstacles.
-
-```python
-from viam.proto.common import (
-    WorldState, GeometriesInFrame, Geometry,
-    Pose, RectangularPrism, Vector3,
-)
-
-table = Geometry(
-    center=Pose(x=0, y=0, z=-15, o_x=0, o_y=0, o_z=1, theta=0),
-    box=RectangularPrism(dims_mm=Vector3(x=1200, y=800, z=30)),
-    label="table",
-)
-obstacles   = GeometriesInFrame(reference_frame="world", geometries=[table])
-world_state = WorldState(obstacles=[obstacles])
-
-# Pass to every motion.move call
-await motion.move("gripper-1", PoseInFrame("world", approach),
-                  world_state=world_state, constraints=linear_5mm)
-```
-
-> Note: If obstacles are already in the machine config motion service attributes, the planner includes them automatically — explicit WorldState in code is **additive** (e.g. the cube being held).
-
----
-
-## [4.12] — Common Errors + Debugging Guide
+## [5.7] — Common Errors + Debugging Guide
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
@@ -707,32 +681,32 @@ await motion.move("gripper-1", PoseInFrame("world", approach),
 | Pick point drifts / is wrong | Detecting while not at `home-pose` | Add `await home.set_position(2)` + sleep before detecting |
 | Pick point incorrect y axis | Camera frame vs. world frame confused | Verify `transform_pose` call — `reference_frame` must match camera name |
 | Cube drops mid-transit | Gripper settle time too short | Add `await asyncio.sleep(0.3)` after `gripper.grab()` |
-| `get_object_point_clouds` empty | Cube not in frame or threshold too high | Test GetObjectPointClouds in Control tab first; check hue threshold |
+| `get_object_point_clouds` empty | Cube not in frame or threshold too high | Test GetObjectPointClouds in Control tab first; check the detector confidence threshold |
 | `from_robot` raises KeyError | Resource name doesn't match config | Check exact name in CONFIGURE tab — case sensitive, no spaces |
 
 > Note: The 3D scene tab is the most useful debugging tool for motion planning failures — look at what geometry the planner sees.
 
 ---
 
-## [4.13] — Phase 4 Summary
+## [5.8] — Phase 5 Summary
 
-- `RobotClient.at_address()` + `Type.from_robot()` → get all resource handles directly
-- Static sequence first — same as Phase 3 but in Python, confirms everything works
+- Configure + test the vision pipeline in the app before trusting it in code
 - Must be at `home-pose` before detecting — wrist-mounted camera frame changes with arm position
-- `get_object_point_clouds()` → `machine.transform_pose()` → compute pick point
+- `get_object_point_clouds()` → `machine.transform_pose()` → object centre in world frame
+- Compute approach + grasp from the world-frame centre; `motion.move` drives the pick
 - Hybrid: `motion.move` for pick (Cartesian), switches for place (pre-measured)
 
-*If your script runs end-to-end, you have completed the core workshop goal.*
+*Milestone: the robot sees a cube and picks it. If your perception loop runs end-to-end, you've completed the full workshop goal.*
 
 ---
 
-# PHASE 5 — INLINE MODULE (STRETCH GOAL, 15 min)
+# PHASE 6 — INLINE MODULE (STRETCH GOAL, 13 min)
 
 *Convert your working script to an autonomous on-robot service — no laptop required.*
 
 ---
 
-## [5.1] — Script → Module: What Changes and Why
+## [6.1] — Script → Module: What Changes and Why
 
 *(Two-column comparison)*
 
@@ -749,7 +723,7 @@ await motion.move("gripper-1", PoseInFrame("world", approach),
 
 ---
 
-## [5.2] — Modules: The Extension Mechanism
+## [6.2] — Modules: The Extension Mechanism
 
 *(Step-by-step cards: config → download → subprocess → live resource)*
 
@@ -764,7 +738,7 @@ Same mechanism for hardware drivers and your control code.
 
 ---
 
-## [5.3] — The Inline Module Editor **[LIVE DEMO]**
+## [6.3] — The Inline Module Editor **[LIVE DEMO]**
 
 1. CONFIGURE tab → **+** → **Control code**
 2. Browser-based Python editor opens with generic service boilerplate pre-filled
@@ -775,7 +749,7 @@ Reference: `docs.viam.com/build-modules/write-an-inline-module`
 
 ---
 
-## [5.4] — `from_robot` → Dependency Injection
+## [6.4] — `from_robot` → Dependency Injection
 
 Same resources, same names — different access pattern. `validate_config` declares what to inject; `reconfigure` receives it.
 
@@ -802,16 +776,16 @@ def reconfigure(self, config, deps):
 
 The resource names are identical: `"arm-1"`, `"home-pose"`, etc. Only the access pattern changes — `from_robot` vs. `cast` + `get_resource_name`.
 
-> Note: Students who've done Phase 4 should recognise every resource name here — they're the same strings they passed to `from_robot`. The cast step is new; the dependency names are identical.
+> Note: Students who've done Phases 4–5 should recognise every resource name here — they're the same strings they passed to `from_robot`. The cast step is new; the dependency names are identical.
 
 ---
 
-## [5.5] — `do_command` + Scheduled Job
+## [6.5] — `do_command` + Scheduled Job
 
 ```python
 async def do_command(self, command, *, timeout=None, **kwargs):
     if command.get("command") == "start":
-        await self._sort_all()  # your Phase 4 loop, adapted
+        await self._sort_all()  # your Phase 5 loop, adapted
         return {"status": "done"}
     return {"error": "unknown command"}
 ```
@@ -834,9 +808,9 @@ Reference: `docs.viam.com/manage/software/scheduled-jobs`
 
 ---
 
-## [5.6] — Phase 5 Summary
+## [6.6] — Phase 6 Summary
 
-- Module = your Phase 4 script, packaged to run on the robot autonomously
+- Module = your Phase 4–5 script, packaged to run on the robot autonomously
 - `from_robot(robot, name)` → `cast(Type, dependencies[Type.get_resource_name(name)])`
 - `validate_config` declares which resources to inject; `reconfigure` casts and stores them
 - `do_command` wraps your sort cycle; a scheduled job triggers it on a cadence
@@ -846,26 +820,26 @@ Reference: `docs.viam.com/manage/software/scheduled-jobs`
 
 ---
 
-# PHASE 6 — WRAP + NEXT STEPS (5 min)
+# PHASE 7 — WRAP + NEXT STEPS (5 min)
 
 *What we covered · exercises · references.*
 
 ---
 
-## [6.1] — What We Covered
+## [7.1] — What We Covered
 
 - Three layers: cloud → viam-agent → viam-server (downloads modules + runs resources)
 - Resource model: `namespace:family:model` — stable API, swappable hardware
 - Vision pipeline: shape-detector (2D) → vision-segment (3D objects with labels)
 - Five key poses captured via arm-position-saver; tested manually from the Control tab
-- WorldState: table, bins, safety walls as obstacle geometry for the motion planner
+- WorldState: table and safety walls as obstacle geometry for the motion planner
 - Local script: `from_robot` → static sequence → perception → full pick-and-place loop
 - Wrist-mounted camera: must detect from `home-pose` for correct world-frame transforms
 - *(Stretch)* Inline module: `from_robot` → `cast` + `get_resource_name`; `do_command` + job
 
 ---
 
-## [6.2] — Exercises to Continue
+## [7.2] — Exercises to Continue
 
 - **Add a new colour bin** — jog arm, save switch, add to the bins dict — no code change needed for the core logic
 - **Add a LinearConstraint to the descent** — prevents the arm arcing into the cube; add a `constraints=` argument to the grasp `motion.move` call
@@ -874,7 +848,7 @@ Reference: `docs.viam.com/manage/software/scheduled-jobs`
 
 ---
 
-## [6.3] — Reference Links + Thank You
+## [7.3] — Reference Links + Thank You
 
 **What questions do you have?**
 
@@ -908,9 +882,10 @@ Viam Discord: **discord.gg/viam**
 | 1 — Mental Model | 9 + 1 | 15 min |
 | 2 — Configure + App | 7 + 1 | 20 min |
 | 3 — Static Positions + WorldState | 6 + 1 | 20 min |
-| 4 — Local Python Script | 13 + 1 | 30 min |
-| 5 — Inline Module (stretch) | 6 + 1 | 15 min |
-| 6 — Wrap | 3 + 1 | 5 min |
+| 4 — Control the Robot from Python | 5 + 1 | 15 min |
+| 5 — Perception-Guided Picking | 8 + 1 | 22 min |
+| 6 — Inline Module (stretch) | 6 + 1 | 13 min |
+| 7 — Wrap | 3 + 1 | 5 min |
 | Appendix | 4 | — |
 
 ---
@@ -924,6 +899,8 @@ Viam Discord: **discord.gg/viam**
 | No static positions phase | Phase 3: static positions + WorldState | Isolates hardware bugs from perception bugs; safety obstacles |
 | Module as core goal | Module as explicit stretch goal | Students couldn't reach it; prevents all-or-nothing outcome |
 | No WorldState phase | Phase 3 includes WorldState + obstacles | Safety (arm near students) and practical (planner needs context) |
+| Phase 4: static script + perception in one 30-min phase | Split: Phase 4 drives the robot, Phase 5 adds perception | Perception is the hardest content; a dedicated phase protects focus and banks a guaranteed Phase 4 win |
+| WorldState passed in code (old Phase 4) | Obstacles live only in the machine config | Configured once, applied automatically to every plan — no runtime WorldState boilerplate to teach |
 
 ---
 
@@ -937,12 +914,12 @@ Viam Discord: **discord.gg/viam**
 | Pick point wrong or drifting | Detecting while not at `home-pose` | Add `await home.set_position(2)` + sleep before detecting |
 | `motion.move` times out | IK infeasible or obstacle in path | 3D scene tab — check arm path vs. obstacles |
 | Cube drops during transit | Gripper settle time too short | `await asyncio.sleep(0.3)` after `gripper.grab()` |
-| `get_object_point_clouds` empty | Cube not in frame / threshold high | Test in Control tab; check hue threshold on color-detector |
+| `get_object_point_clouds` empty | Cube not in frame / threshold high | Test in Control tab; check the confidence threshold on shape-detector |
 | Inline module build takes forever | Expected — Python cloud build | ~1 min is normal; use local script during iteration |
 
 ---
 
-## [A.4] — Phase 4 Starter Script Template
+## [A.4] — Phase 4–5 Starter Script Template
 
 Copy connection details from the Connect tab → Python SDK. Fill in the TODOs in order. Run after each section.
 
@@ -962,13 +939,11 @@ from viam.components.gripper import Gripper
 from viam.components.switch import Switch
 from viam.services.motion import MotionClient
 from viam.services.vision import VisionClient
-from viam.proto.common import (
-    PoseInFrame, Pose, WorldState, GeometriesInFrame,
-)
-from viam.proto.service.motion import Constraints, LinearConstraint
+from viam.proto.common import PoseInFrame, Pose
+from viam.proto.service.motion import Constraints, LinearConstraint  # for the optional LinearConstraint follow-up
 
 # --- Tuning constants ---
-GRIPPER_LENGTH_MM = 60   # measure from flange to finger tips
+GRIPPER_LENGTH_MM = 60   # offset from the gripper's claw-geometry TCP to the real fingertip contact point
 APPROACH_MM       = 100  # clearance above cube top before descending
 
 
@@ -1015,7 +990,7 @@ async def main():
         approach  = Switch.from_robot(machine, APPROACH_POSE)
         grasp     = Switch.from_robot(machine, GRASP_POSE)
         travel    = Switch.from_robot(machine, TRAVEL_POSE)
-        place_bin = Switch.from_robot(machine, PLACE_POSE)
+        place_pose = Switch.from_robot(machine, PLACE_POSE)
 
         # TODO 3: Run the static sequence (Phase 4.4)
         await home.set_position(2)
@@ -1025,12 +1000,12 @@ async def main():
         await gripper.grab()
         await asyncio.sleep(0.3)  # finger gripper settle
         await travel.set_position(2)
-        await place_bin.set_position(2)
+        await place_pose.set_position(2)
         await gripper.open()
         await home.set_position(2)
         print("Static sequence complete")
 
-        # TODO 4: Add perception + motion.move (Phase 4.9 / 4.10)
+        # TODO 4: Add perception + motion.move (Phase 5.5 / 5.6)
         # await home.set_position(2)          # must be at home for camera frame
         # objects = await vision.get_object_point_clouds(CAMERA_NAME)
         # if not objects:
@@ -1049,13 +1024,13 @@ async def main():
         # # grasp_pose    = offset_pose(obj_in_world.pose, GRIPPER_LENGTH_MM)
         #
         # # TODO: motion.move to approach, open, descend to grasp, grab, travel, place
-        # # await motion.move("gripper-1", PoseInFrame("world", approach_pose))
+        # # await motion.move("gripper-1", PoseInFrame(reference_frame="world", pose=approach_pose))
         # # await gripper.open()
-        # # await motion.move("gripper-1", PoseInFrame("world", grasp_pose))
+        # # await motion.move("gripper-1", PoseInFrame(reference_frame="world", pose=grasp_pose))
         # # await gripper.grab()
         # # await asyncio.sleep(0.3)
         # # await travel.set_position(2)
-        # # await place_bin.set_position(2)
+        # # await place_pose.set_position(2)
         # # await gripper.open()
         # # await home.set_position(2)
 
