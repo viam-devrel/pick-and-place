@@ -104,7 +104,8 @@ async def pick_and_place(
         print("No objects detected")
         return False
 
-    # Largest object by point count. Use len(point_cloud), not .size.
+    # Largest object by point-cloud byte size (a proxy for point count).
+    # point_cloud is raw PCD bytes, so use len(point_cloud), not .size.
     obj = max(objects, key=lambda o: len(o.point_cloud))
     geometry = obj.geometries.geometries[0]
     label = geometry.label

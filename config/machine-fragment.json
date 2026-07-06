@@ -8,8 +8,8 @@
     },
     {
       "type": "registry",
-      "name": "viam_camera-realsense",
-      "module_id": "viam:camera-realsense",
+      "name": "viam_realsense",
+      "module_id": "viam:realsense",
       "version": "latest"
     },
     {
@@ -32,9 +32,15 @@
       "model": "viam:ufactory:xArm6",
       "attributes": {
         "host": "REPLACE_WITH_ARM_IP",
-        "port": 502,
-        "speed_degs_per_sec": 60,
-        "acceleration_degs_per_sec_per_sec": 100
+        "speed_degs_per_sec": 30
+      },
+      "frame": {
+        "parent": "world",
+        "translation": { "x": 0, "y": 0, "z": 0 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
       }
     },
     {
@@ -44,6 +50,14 @@
       "attributes": {
         "arm": "arm-1"
       },
+      "frame": {
+        "parent": "arm-1",
+        "translation": { "x": 0, "y": 0, "z": 105 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
+      },
       "depends_on": ["arm-1"]
     },
     {
@@ -52,8 +66,16 @@
       "model": "viam:camera:realsense",
       "attributes": {
         "sensors": ["color", "depth"],
-        "width_px": 640,
-        "height_px": 480
+        "align_color_depth": true,
+        "serial_number": "REPLACE_WITH_CAMERA_SERIAL"
+      },
+      "frame": {
+        "parent": "arm-1",
+        "translation": { "x": -73, "y": 40, "z": 18 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 270 }
+        }
       }
     },
 
