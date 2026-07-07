@@ -36,10 +36,19 @@
       },
       "frame": {
         "parent": "world",
-        "translation": { "x": 0, "y": 0, "z": 0 },
+        "translation": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
         "orientation": {
           "type": "ov_degrees",
-          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+          "value": {
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "th": 0
+          }
         }
       }
     },
@@ -52,81 +61,121 @@
       },
       "frame": {
         "parent": "arm-1",
-        "translation": { "x": 0, "y": 0, "z": 105 },
+        "translation": {
+          "x": 0,
+          "y": 0,
+          "z": 105
+        },
         "orientation": {
           "type": "ov_degrees",
-          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+          "value": {
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "th": 0
+          }
         }
-      },
-      "depends_on": ["arm-1"]
+      }
     },
     {
       "name": "cam-1",
       "api": "rdk:component:camera",
       "model": "viam:camera:realsense",
       "attributes": {
-        "sensors": ["color", "depth"],
+        "sensors": [
+          "color",
+          "depth"
+        ],
         "align_color_depth": true,
         "serial_number": "REPLACE_WITH_CAMERA_SERIAL"
       },
       "frame": {
         "parent": "arm-1",
-        "translation": { "x": -73, "y": 40, "z": 18 },
+        "translation": {
+          "x": -73,
+          "y": 40,
+          "z": 18
+        },
         "orientation": {
           "type": "ov_degrees",
-          "value": { "x": 0, "y": 0, "z": 1, "th": 270 }
+          "value": {
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "th": 270
+          }
         }
       }
     },
-
     {
       "name": "home-pose",
       "api": "rdk:component:switch",
       "model": "erh:vmodutils:arm-position-saver",
-      "attributes": { "arm": "arm-1" },
-      "depends_on": ["arm-1"]
+      "attributes": {
+        "arm": "arm-1"
+      }
     },
     {
       "name": "approach-pose",
       "api": "rdk:component:switch",
       "model": "erh:vmodutils:arm-position-saver",
-      "attributes": { "arm": "arm-1" },
-      "depends_on": ["arm-1"]
+      "attributes": {
+        "arm": "arm-1"
+      }
     },
     {
       "name": "grasp-pose",
       "api": "rdk:component:switch",
       "model": "erh:vmodutils:arm-position-saver",
-      "attributes": { "arm": "arm-1" },
-      "depends_on": ["arm-1"]
+      "attributes": {
+        "arm": "arm-1"
+      }
     },
     {
       "name": "travel-pose",
       "api": "rdk:component:switch",
       "model": "erh:vmodutils:arm-position-saver",
-      "attributes": { "arm": "arm-1" },
-      "depends_on": ["arm-1"]
+      "attributes": {
+        "arm": "arm-1"
+      }
     },
     {
       "name": "place-pose",
       "api": "rdk:component:switch",
       "model": "erh:vmodutils:arm-position-saver",
-      "attributes": { "arm": "arm-1" },
-      "depends_on": ["arm-1"]
+      "attributes": {
+        "arm": "arm-1"
+      }
     },
     {
       "name": "table",
       "api": "rdk:component:gripper",
       "model": "erh:vmodutils:obstacle",
       "attributes": {
-        "geometries": [{ "type": "box", "x": 1200, "y": 800, "z": 30 }]
+        "geometries": [
+          {
+            "type": "box",
+            "x": 1200,
+            "y": 800,
+            "z": 30
+          }
+        ]
       },
       "frame": {
         "parent": "world",
-        "translation": { "x": 0, "y": 0, "z": -15 },
+        "translation": {
+          "x": 0,
+          "y": 0,
+          "z": -15
+        },
         "orientation": {
           "type": "ov_degrees",
-          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+          "value": {
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "th": 0
+          }
         }
       }
     },
@@ -135,14 +184,30 @@
       "api": "rdk:component:gripper",
       "model": "erh:vmodutils:obstacle",
       "attributes": {
-        "geometries": [{ "type": "box", "x": 1200, "y": 20, "z": 600 }]
+        "geometries": [
+          {
+            "type": "box",
+            "x": 1200,
+            "y": 20,
+            "z": 600
+          }
+        ]
       },
       "frame": {
         "parent": "world",
-        "translation": { "x": 0, "y": "REPLACE_WITH_MEASURED_FRONT_Y", "z": 300 },
+        "translation": {
+          "x": 0,
+          "y": "REPLACE_WITH_MEASURED_FRONT_Y",
+          "z": 300
+        },
         "orientation": {
           "type": "ov_degrees",
-          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+          "value": {
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "th": 0
+          }
         }
       }
     },
@@ -151,14 +216,30 @@
       "api": "rdk:component:gripper",
       "model": "erh:vmodutils:obstacle",
       "attributes": {
-        "geometries": [{ "type": "box", "x": 20, "y": 800, "z": 600 }]
+        "geometries": [
+          {
+            "type": "box",
+            "x": 20,
+            "y": 800,
+            "z": 600
+          }
+        ]
       },
       "frame": {
         "parent": "world",
-        "translation": { "x": "REPLACE_WITH_MEASURED_SIDE_X", "y": 0, "z": 300 },
+        "translation": {
+          "x": "REPLACE_WITH_MEASURED_SIDE_X",
+          "y": 0,
+          "z": 300
+        },
         "orientation": {
           "type": "ov_degrees",
-          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+          "value": {
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "th": 0
+          }
         }
       }
     }
@@ -170,8 +251,7 @@
       "model": "devrel:shape-finder:detector",
       "attributes": {
         "camera_name": "cam-1"
-      },
-      "depends_on": ["cam-1"]
+      }
     },
     {
       "name": "vision-segment",
@@ -182,8 +262,7 @@
         "camera_name": "cam-1",
         "mean_k": 5,
         "sigma": 1.25
-      },
-      "depends_on": ["shape-detector", "cam-1"]
+      }
     }
   ]
 }
