@@ -146,10 +146,9 @@ Search for these tokens after cloning:
 | Token | Where | Replace with |
 |---|---|---|
 | `REPLACE_WITH_ARM_IP` | `config/machine-fragment.json` | Your xArm6 controller IP |
-| `REPLACE_WITH_MEASURED_FRONT_Y` / `REPLACE_WITH_MEASURED_SIDE_X` | `config/obstacles-template.json` | Safety-wall positions from `GetEndPosition` |
+| `REPLACE_WITH_MEASURED_FRONT_X` / `REPLACE_WITH_MEASURED_BACK_X` | `config/obstacles-template.json` | Safety-wall positions from `GetEndPosition` |
 | `<paste from Connect tab>` | `scripts/*.py` | Machine address + API key + key ID |
 
-The `viam-sdk` version, vision-service tuning (`confidence_threshold_pct`,
-`mean_k`, `sigma`), and grasp/approach offsets (`GRIPPER_LENGTH_MM`,
+The `viam-sdk` version, vision-service tuning (`mean_k`, `sigma`), and grasp/approach offsets (`GRIPPER_LENGTH_MM`,
 `APPROACH_MM`) are sensible defaults — adjust to your blocks and gripper.
 
