@@ -113,6 +113,54 @@
       "model": "erh:vmodutils:arm-position-saver",
       "attributes": { "arm": "arm-1" },
       "depends_on": ["arm-1"]
+    },
+    {
+      "name": "table",
+      "api": "rdk:component:gripper",
+      "model": "erh:vmodutils:obstacle",
+      "attributes": {
+        "geometries": [{ "type": "box", "x": 1200, "y": 800, "z": 30 }]
+      },
+      "frame": {
+        "parent": "world",
+        "translation": { "x": 0, "y": 0, "z": -15 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
+      }
+    },
+    {
+      "name": "safety-wall-front",
+      "api": "rdk:component:gripper",
+      "model": "erh:vmodutils:obstacle",
+      "attributes": {
+        "geometries": [{ "type": "box", "x": 1200, "y": 20, "z": 600 }]
+      },
+      "frame": {
+        "parent": "world",
+        "translation": { "x": 0, "y": "REPLACE_WITH_MEASURED_FRONT_Y", "z": 300 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
+      }
+    },
+    {
+      "name": "safety-wall-side",
+      "api": "rdk:component:gripper",
+      "model": "erh:vmodutils:obstacle",
+      "attributes": {
+        "geometries": [{ "type": "box", "x": 20, "y": 800, "z": 600 }]
+      },
+      "frame": {
+        "parent": "world",
+        "translation": { "x": "REPLACE_WITH_MEASURED_SIDE_X", "y": 0, "z": 300 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
+      }
     }
   ],
   "services": [

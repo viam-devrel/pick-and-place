@@ -1,5 +1,5 @@
 {
-  "_README": "WorldState obstacle template for Phase 3. The obstacle components below register through the erh:vmodutils module and present on the API as grippers, so they show up in resource_names as grippers. Add them to the `components` array of your machine (or the imported fragment). Replace every REPLACE_WITH_MEASURED value by measuring your own workspace (sample positions with GetEndPosition over the real table). Pose z is the CENTER of the box: half its height. The table sits below world z=0, so its z is negative half-thickness. The safety walls are thin vertical boxes at the workspace boundary — size and place them to fence the arm away from people and equipment. They are a real safety feature and a demo of the motion planner honoring configured obstacles for production deployments.",
+  "_README": "WorldState obstacle template for Phase 3. Each obstacle is an erh:vmodutils:obstacle component: its `geometries` attribute holds the box dimensions (centered on the component's own origin), and its `frame` (parented to world) positions it. An obstacle only appears in the 3D scene and the planner's world state once it has this frame. These components present on the API as grippers, so they show up in resource_names as grippers. Add them to the `components` array of your machine (or the imported fragment). Replace every REPLACE_WITH_MEASURED value by measuring your own workspace (read positions with the 'Current position' button under MoveToPosition on the arm's control card). The frame translation z is the CENTER of the box (half its height); the table sits below world z=0, so its z is negative half-thickness. The safety walls are thin vertical boxes at the workspace boundary: size and place them to fence the arm away from people and equipment. They are a real safety feature and a demo of the motion planner honoring configured obstacles for production deployments.",
 
   "components": [
     {
@@ -7,17 +7,15 @@
       "api": "rdk:component:gripper",
       "model": "erh:vmodutils:obstacle",
       "attributes": {
-        "geometries": [
-          {
-            "label": "table",
-            "type": "box",
-            "x": 1200,
-            "y": 800,
-            "z": 30,
-            "translation": { "x": 0, "y": 0, "z": -15 },
-            "parent": "world"
-          }
-        ]
+        "geometries": [{ "type": "box", "x": 1200, "y": 800, "z": 30 }]
+      },
+      "frame": {
+        "parent": "world",
+        "translation": { "x": 0, "y": 0, "z": -15 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
       }
     },
     {
@@ -25,17 +23,15 @@
       "api": "rdk:component:gripper",
       "model": "erh:vmodutils:obstacle",
       "attributes": {
-        "geometries": [
-          {
-            "label": "safety-wall-front",
-            "type": "box",
-            "x": 1200,
-            "y": 20,
-            "z": 600,
-            "translation": { "x": 0, "y": "REPLACE_WITH_MEASURED_FRONT_Y", "z": 300 },
-            "parent": "world"
-          }
-        ]
+        "geometries": [{ "type": "box", "x": 1200, "y": 20, "z": 600 }]
+      },
+      "frame": {
+        "parent": "world",
+        "translation": { "x": 0, "y": "REPLACE_WITH_MEASURED_FRONT_Y", "z": 300 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
       }
     },
     {
@@ -43,17 +39,15 @@
       "api": "rdk:component:gripper",
       "model": "erh:vmodutils:obstacle",
       "attributes": {
-        "geometries": [
-          {
-            "label": "safety-wall-side",
-            "type": "box",
-            "x": 20,
-            "y": 800,
-            "z": 600,
-            "translation": { "x": "REPLACE_WITH_MEASURED_SIDE_X", "y": 0, "z": 300 },
-            "parent": "world"
-          }
-        ]
+        "geometries": [{ "type": "box", "x": 20, "y": 800, "z": 600 }]
+      },
+      "frame": {
+        "parent": "world",
+        "translation": { "x": "REPLACE_WITH_MEASURED_SIDE_X", "y": 0, "z": 300 },
+        "orientation": {
+          "type": "ov_degrees",
+          "value": { "x": 0, "y": 0, "z": 1, "th": 0 }
+        }
       }
     }
   ]

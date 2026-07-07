@@ -61,13 +61,11 @@ PLACE_POSE = "place-pose"
 
 
 async def connect() -> RobotClient:
-    return await RobotClient.at_address(
-        MACHINE_ADDRESS,
-        options=RobotClient.Options.with_api_key(
-            api_key=API_KEY,
-            api_key_id=API_KEY_ID,
-        ),
+    opts = RobotClient.Options.with_api_key(
+        api_key=API_KEY,
+        api_key_id=API_KEY_ID,
     )
+    return await RobotClient.at_address(MACHINE_ADDRESS, opts)
 
 
 async def main() -> None:
@@ -80,8 +78,8 @@ async def main() -> None:
         # TODO 3: get typed resource handles.
         arm = Arm.from_robot(machine, ARM_NAME)
         gripper = Gripper.from_robot(machine, GRIPPER_NAME)
-        motion = MotionClient.from_robot(machine, "builtin")
-        vision = VisionClient.from_robot(machine, VISION_NAME)
+        # motion = MotionClient.from_robot(machine, "builtin")
+        # vision = VisionClient.from_robot(machine, VISION_NAME)
 
         home = Switch.from_robot(machine, HOME_POSE)
         approach = Switch.from_robot(machine, APPROACH_POSE)
