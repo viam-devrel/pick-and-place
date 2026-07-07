@@ -187,8 +187,8 @@
         "geometries": [
           {
             "type": "box",
-            "x": 1200,
-            "y": 20,
+            "x": 20,
+            "y": 1200,
             "z": 600
           }
         ]
@@ -196,8 +196,8 @@
       "frame": {
         "parent": "world",
         "translation": {
-          "x": 0,
-          "y": "REPLACE_WITH_MEASURED_FRONT_Y",
+          "x": "REPLACE_WITH_MEASURED_FRONT_X",
+          "y": 0,
           "z": 300
         },
         "orientation": {
@@ -212,7 +212,7 @@
       }
     },
     {
-      "name": "safety-wall-side",
+      "name": "safety-wall-back",
       "api": "rdk:component:gripper",
       "model": "erh:vmodutils:obstacle",
       "attributes": {
@@ -220,7 +220,7 @@
           {
             "type": "box",
             "x": 20,
-            "y": 800,
+            "y": 1200,
             "z": 600
           }
         ]
@@ -228,7 +228,7 @@
       "frame": {
         "parent": "world",
         "translation": {
-          "x": "REPLACE_WITH_MEASURED_SIDE_X",
+          "x": "REPLACE_WITH_MEASURED_BACK_X",
           "y": 0,
           "z": 300
         },
