@@ -179,11 +179,11 @@
       "model": "viam:vision:detections-to-segments",
       "attributes": {
         "detector_name": "shape-detector",
-        "confidence_threshold_pct": 0.5,
-        "mean_k": 50,
-        "sigma": 1.5
+        "camera_name": "cam-1",
+        "mean_k": 5,
+        "sigma": 1.25
       },
-      "depends_on": ["shape-detector"]
+      "depends_on": ["shape-detector", "cam-1"]
     }
   ]
 }
