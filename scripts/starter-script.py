@@ -79,30 +79,31 @@ async def main() -> None:
         # TODO 3: get typed resource handles.
         gripper = Gripper.from_robot(machine, GRIPPER_NAME)
 
-        # Used in Phase 5
-        # motion = MotionClient.from_robot(machine, "builtin")
-        # vision = VisionClient.from_robot(machine, VISION_NAME)
-
         home = Switch.from_robot(machine, HOME_POSE)
         approach = Switch.from_robot(machine, APPROACH_POSE)
         grasp = Switch.from_robot(machine, GRASP_POSE)
         travel = Switch.from_robot(machine, TRAVEL_POSE)
         place_pose = Switch.from_robot(machine, PLACE_POSE)
 
+        # Used in Phase 5
+        # motion = MotionClient.from_robot(machine, "builtin")
+        # vision = VisionClient.from_robot(machine, VISION_NAME)
+
         # TODO 4: run the static sequence (Phase 4.4).
         # Same order you tested manually from the Control tab in Phase 3.
+
         # SetPosition(2) executes a saved pose.
-        await home.set_position(2)
-        await approach.set_position(2)
-        await gripper.open()
-        await grasp.set_position(2)
-        await gripper.grab()
-        await asyncio.sleep(0.3)  # finger gripper settle
-        await travel.set_position(2)
-        await place_pose.set_position(2)
-        await gripper.open()
-        await home.set_position(2)
-        print("Static sequence complete")
+        # await home.set_position(2)
+        # await approach.set_position(2)
+        # await gripper.open()
+        # await grasp.set_position(2)
+        # await gripper.grab()
+        # await asyncio.sleep(0.3)  # finger gripper settle
+        # await travel.set_position(2)
+        # await place_pose.set_position(2)
+        # await gripper.open()
+        # await home.set_position(2)
+        # print("Static sequence complete")
 
         # TODO 5: add perception (Phase 5.5).
         # Uncomment and complete. Must be at home before detecting because the
