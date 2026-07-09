@@ -168,7 +168,7 @@ class MyGenericService(GenericService, EasyResource):
         label = geometry.label
         print(f"Detected: {label}")
 
-        # 3. The object pose is in the camera frame; the planner needs world frame.
+        # 3. Tag the detected pose with the camera frame; motion.move resolves it.
         obj_in_cam = PoseInFrame(reference_frame=self.camera_name, pose=geometry.center)
 
         # 4. Derive the approach and grasp poses from the object center.
