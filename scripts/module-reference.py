@@ -1,5 +1,4 @@
 import asyncio
-import os
 from typing import ClassVar, Mapping, Optional, Sequence, Tuple
 from typing_extensions import Self
 from viam.proto.app.robot import ComponentConfig
@@ -15,10 +14,10 @@ from viam.components.switch import Switch
 from viam.services.vision import VisionClient
 from viam.services.motion import Motion
 from viam.services.generic import Generic as GenericService
-from viam.robot.client import RobotClient
 
-GRIPPER_LENGTH_MM = 60  # offset from the gripper's claw-geometry TCP to the real fingertip contact point
-APPROACH_MM = 100  # clearance above the block top before descending
+# offset from the gripper's claw-geometry TCP to the real fingertip contact point
+GRIPPER_LENGTH_MM = -60
+APPROACH_MM = -100  # clearance above the block top before descending
 SETTLE_S = 0.3  # finger gripper settle time after grab
 
 
@@ -33,14 +32,6 @@ def offset_pose(pose: Pose, z_offset_mm: float) -> Pose:
         o_z=pose.o_z,
         theta=pose.theta,
     )
-
-
-async def create_robot_client_from_module():
-    opts = RobotClient.Options.with_api_key(
-        api_key=os.environ["VIAM_API_KEY"],
-        api_key_id=os.environ["VIAM_API_KEY_ID"],
-    )
-    return await RobotClient.at_address(os.environ["VIAM_MACHINE_FQDN"], opts)
 
 
 # IMPORTANT: Do not change the class name or the MODEL triplet below.
@@ -59,7 +50,6 @@ class MyGenericService(GenericService, EasyResource):
     travel: Switch
     place_pose: Switch
     vision: VisionClient
-    robot_client: Optional[RobotClient]
 
     @classmethod
     def validate_config(
@@ -157,8 +147,6 @@ class MyGenericService(GenericService, EasyResource):
 
         self.motion = dependencies[Motion.get_resource_name("builtin")]
 
-        self.robot_client = None
-
         return self
 
     async def run_pick_cycle(self) -> bool:
@@ -182,25 +170,23 @@ class MyGenericService(GenericService, EasyResource):
 
         # 3. The object pose is in the camera frame; the planner needs world frame.
         obj_in_cam = PoseInFrame(reference_frame=self.camera_name, pose=geometry.center)
-        if not self.robot_client:
-            self.robot_client = await create_robot_client_from_module()
-
-        obj_in_world = await self.robot_client.transform_pose(obj_in_cam, "world")
 
         # 4. Derive the approach and grasp poses from the object center.
-        approach_pose = offset_pose(obj_in_world.pose, APPROACH_MM)
-        grasp_pose = offset_pose(obj_in_world.pose, GRIPPER_LENGTH_MM)
+        approach_pose = offset_pose(obj_in_cam.pose, APPROACH_MM)
+        grasp_pose = offset_pose(obj_in_cam.pose, GRIPPER_LENGTH_MM)
 
         # 5. Pick: move above, open, descend down, grab, lift.
         await self.motion.move(
             component_name=self.gripper_name,
-            destination=PoseInFrame(reference_frame="world", pose=approach_pose),
+            destination=PoseInFrame(
+                reference_frame=self.camera_name, pose=approach_pose
+            ),
         )
         await self.gripper.open()
         await asyncio.sleep(SETTLE_S)
         await self.motion.move(
             component_name=self.gripper_name,
-            destination=PoseInFrame(reference_frame="world", pose=grasp_pose),
+            destination=PoseInFrame(reference_frame=self.camera_name, pose=grasp_pose),
         )
         await self.gripper.grab()
         await asyncio.sleep(SETTLE_S)
@@ -224,9 +210,3 @@ class MyGenericService(GenericService, EasyResource):
             success = await self.run_pick_cycle()
             return {"success": success}
         return {}
-
-    async def close(self):
-        """Close the in-module RobotClient when the resource shuts down."""
-        if self.robot_client:
-            await self.robot_client.close()
-            self.robot_client = None

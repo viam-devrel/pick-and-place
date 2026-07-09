@@ -29,8 +29,10 @@ from viam.proto.common import PoseInFrame, Pose
 from viam.proto.service.motion import Constraints, LinearConstraint
 
 # --- Tuning constants ---------------------------------------------------------
-GRIPPER_LENGTH_MM = 60  # offset from the gripper's claw-geometry TCP to the real fingertip contact point
-APPROACH_MM = 100  # clearance above the block top before descending
+GRIPPER_LENGTH_MM = (
+    -60
+)  # offset from the gripper's claw-geometry TCP to the real fingertip contact point
+APPROACH_MM = -100  # clearance above the block top before descending
 SETTLE_S = 0.3  # finger gripper settle time after grab
 
 # --- Connection details (from the Connect tab -> Python SDK) ------------------
@@ -113,11 +115,10 @@ async def pick_and_place(
 
     # 3. The object pose is in the camera frame; the planner needs world frame.
     obj_in_cam = PoseInFrame(reference_frame=CAMERA_NAME, pose=geometry.center)
-    obj_in_world = await machine.transform_pose(obj_in_cam, "world")
 
     # 4. Derive the approach and grasp poses from the object center.
-    approach_pose = offset_pose(obj_in_world.pose, APPROACH_MM)
-    grasp_pose = offset_pose(obj_in_world.pose, GRIPPER_LENGTH_MM)
+    approach_pose = offset_pose(obj_in_cam.pose, APPROACH_MM)
+    grasp_pose = offset_pose(obj_in_cam.pose, GRIPPER_LENGTH_MM)
 
     # 5. Pick: move above, open, descend straight down, grab, lift.
     # LinearConstraint = the tutorial's optional Phase 5 follow-up: forces a straight-down descent
@@ -126,13 +127,13 @@ async def pick_and_place(
     )
     await motion.move(
         component_name=GRIPPER_NAME,
-        destination=PoseInFrame(reference_frame="world", pose=approach_pose),
+        destination=PoseInFrame(reference_frame=CAMERA_NAME, pose=approach_pose),
     )
     await gripper.open()
     await asyncio.sleep(SETTLE_S)
     await motion.move(
         component_name=GRIPPER_NAME,
-        destination=PoseInFrame(reference_frame="world", pose=grasp_pose),
+        destination=PoseInFrame(reference_frame=CAMERA_NAME, pose=grasp_pose),
         constraints=linear_down,
     )
     await gripper.grab()
