@@ -74,7 +74,7 @@ async def main() -> None:
         # TODO 2: confirm the connection — list every resource on the machine.
         # You should see arm-1, gripper-1, cam-1, the poses as Switches,
         # and the obstacles as grippers.
-        print(machine.resource_names)
+        #print(machine.resource_names)
 
         # TODO 3: get typed resource handles.
         gripper = Gripper.from_robot(machine, GRIPPER_NAME)
@@ -115,32 +115,49 @@ async def main() -> None:
         #     print("No objects detected")
         #     return
         # obj = max(objects, key=lambda o: len(o.point_cloud))
-        # label = obj.geometries.geometries[0].label
-        # print(f"Detected: {label}")
+        # geometry = obj.geometries.geometries[0]
+        # print(f"Detected: {geometry.label}")
         #
         # # Create the object pose in the camera frame
         # obj_in_cam = PoseInFrame(
         #     reference_frame=CAMERA_NAME,
-        #     pose=obj.geometries.geometries[0].center,
+        #     pose=geometry.center,
         # )
+        # print(f"obj_in_cam: {obj_in_cam}")
 
-        # TODO 6: compute the approach and grasp poses (Phase 5.6).
-        # The approach pose is worked for you — a clearance standoff above the block:
-        #     approach_pose = offset_pose(obj_in_cam.pose, APPROACH_MM)
+        # TODO 6: compute the approach pose and the grasp descent (Phase 5.6).
+        # cam-1 is wrist-mounted, so its frame moves every time the arm moves.
+        # The approach move is resolved from the camera frame while the arm is
+        # still at home, so it lands accurately above the block.
         #
-        # Now YOU compute the grasp pose. motion.move drives the gripper-1 frame
-        # (the gripper's TCP, already offset down the arm) to the target — so the
-        # grasp offset is the gripper-TCP-to-fingertip depth (GRIPPER_LENGTH_MM),
-        # not the whole arm reach. Fill in the offset:
-        #     grasp_pose = offset_pose(obj_in_cam.pose, ___)   # TODO: your offset
+        # The approach pose is worked for you — a clearance standoff above the block:
+        # approach_pose = offset_pose(obj_in_cam.pose, APPROACH_MM)
+        #
+        # For the grasp, don't compute another camera-frame pose. Instead descend
+        # the remaining distance straight down in the gripper's OWN frame (TODO 7).
+        # That avoids the wrist-mounted camera frame shifting once the arm moves
+        # for the approach. Fill in the remaining descent, as a positive value:
+        # grasp_distance = ___   # TODO: (APPROACH_MM - GRIPPER_LENGTH_MM) as a positive mm value
 
         # TODO 7: run the full perception-guided pick loop (Phase 5.6).
         # Hybrid approach: motion.move for the pick (Cartesian precision),
         # arm-position-saver switches for the place (pre-measured, reliable).
         #
-        # await motion.move("gripper-1", PoseInFrame(reference_frame=CAMERA_NAME, pose=approach_pose))
+        # # Move above the block in the camera frame, then open.
+        # await motion.move(
+        #     component_name=GRIPPER_NAME,
+        #     destination=PoseInFrame(reference_frame=CAMERA_NAME, pose=approach_pose),
+        # )
         # await gripper.open()
-        # await motion.move("gripper-1", PoseInFrame(reference_frame=CAMERA_NAME, pose=grasp_pose))
+        #
+        # # Descend the remaining distance straight down in the gripper's frame.
+        # await motion.move(
+        #     component_name=GRIPPER_NAME,
+        #     destination=PoseInFrame(
+        #         reference_frame=GRIPPER_NAME,
+        #         pose=Pose(x=0, y=0, z=grasp_distance, o_x=0, o_y=0, o_z=1, theta=0),
+        #     ),
+        # )
         # await gripper.grab()
         # await asyncio.sleep(0.3)
         # await travel.set_position(2)

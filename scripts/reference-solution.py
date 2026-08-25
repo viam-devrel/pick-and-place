@@ -3,8 +3,8 @@ Viam Pick-and-Place Workshop — Reference Solution
 =================================================
 
 A complete, end-to-end version of `starter-script.py` with every TODO filled in:
-connect -> run the static sequence -> detect -> transform to world frame ->
-pick with motion planning -> place at the saved bin pose -> return home.
+connect -> run the static sequence -> detect -> pick with motion planning ->
+place at the saved bin pose -> return home.
 
     uv run python reference-solution.py        # recommended
     # or, without uv:
@@ -12,9 +12,7 @@ pick with motion planning -> place at the saved bin pose -> return home.
 
 NOTE: This is a reference, not a guarantee. The geometry, offsets, and gripper
 settle timing below must be validated and tuned against YOUR hardware. Tune the
-constants and the offset math before running near people or equipment, and keep
-the LinearConstraint on the final descent so the arm comes straight down onto
-the block instead of arcing into it.
+constants and the offset math before running near people or equipment.
 """
 
 import asyncio
@@ -26,7 +24,6 @@ from viam.components.switch import Switch
 from viam.services.motion import MotionClient
 from viam.services.vision import VisionClient
 from viam.proto.common import PoseInFrame, Pose
-from viam.proto.service.motion import Constraints, LinearConstraint
 
 # --- Tuning constants ---------------------------------------------------------
 GRIPPER_LENGTH_MM = (
@@ -116,25 +113,29 @@ async def pick_and_place(
     # 3. Tag the detected pose with the camera frame; motion.move resolves it.
     obj_in_cam = PoseInFrame(reference_frame=CAMERA_NAME, pose=geometry.center)
 
-    # 4. Derive the approach and grasp poses from the object center.
+    # 4. Derive the approach pose from the object center, in the camera frame.
+    #    cam-1 is wrist-mounted, but the approach move is resolved from the
+    #    camera frame while the arm is still at home, so it lands accurately.
     approach_pose = offset_pose(obj_in_cam.pose, APPROACH_MM)
-    grasp_pose = offset_pose(obj_in_cam.pose, GRIPPER_LENGTH_MM)
 
-    # 5. Pick: move above, open, descend straight down, grab, lift.
-    # LinearConstraint = the tutorial's optional Phase 5 follow-up: forces a straight-down descent
-    linear_down = Constraints(
-        linear_constraint=[LinearConstraint(line_tolerance_mm=5.0)]
-    )
+    # 5. Pick: move above in the camera frame, open, then descend the remaining
+    #    distance straight down in the gripper's own frame, grab, lift.
+    #    Descending relative to the gripper avoids the wrist-mounted camera
+    #    frame shifting once the arm moves for the approach.
     await motion.move(
         component_name=GRIPPER_NAME,
         destination=PoseInFrame(reference_frame=CAMERA_NAME, pose=approach_pose),
     )
     await gripper.open()
     await asyncio.sleep(SETTLE_S)
+    # Move the remaining distance from the approach pose (as a positive value).
+    grasp_distance = (APPROACH_MM - GRIPPER_LENGTH_MM) * -1
     await motion.move(
         component_name=GRIPPER_NAME,
-        destination=PoseInFrame(reference_frame=CAMERA_NAME, pose=grasp_pose),
-        constraints=linear_down,
+        destination=PoseInFrame(
+            reference_frame=GRIPPER_NAME,
+            pose=Pose(x=0, y=0, z=grasp_distance, o_x=0, o_y=0, o_z=1, theta=0),
+        ),
     )
     await gripper.grab()
     await asyncio.sleep(SETTLE_S)
