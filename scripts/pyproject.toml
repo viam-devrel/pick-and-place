@@ -5,7 +5,7 @@ description = "Starter and reference scripts for the Viam vision-guided pick-and
 readme = "../README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "viam-sdk>=0.20",
+    "viam-sdk>=0.84.0",
 ]
 
 [tool.uv]

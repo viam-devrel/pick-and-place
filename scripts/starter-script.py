@@ -74,10 +74,10 @@ async def main() -> None:
         # TODO 2: confirm the connection — list every resource on the machine.
         # You should see arm-1, gripper-1, cam-1, the poses as Switches,
         # and the obstacles as grippers.
-        #print(machine.resource_names)
+        # print(machine.resource_names)
 
         # TODO 3: get typed resource handles.
-        gripper = Gripper.from_robot(machine, GRIPPER_NAME)
+        # gripper = Gripper.from_robot(machine, GRIPPER_NAME)
 
         home = Switch.from_robot(machine, HOME_POSE)
         approach = Switch.from_robot(machine, APPROACH_POSE)
@@ -110,19 +110,18 @@ async def main() -> None:
         # camera is wrist-mounted — its frame moves with the arm.
         #
         # await home.set_position(2)
-        # objects = await vision.get_object_point_clouds(CAMERA_NAME)
-        # if not objects:
+        # detections = await vision.get_detections_3d(CAMERA_NAME)
+        # if not detections:
         #     print("No objects detected")
         #     return
-        # obj = max(objects, key=lambda o: len(o.point_cloud))
-        # geometry = obj.geometries.geometries[0]
-        # print(f"Detected: {geometry.label}")
-        #
-        # # Create the object pose in the camera frame
-        # obj_in_cam = PoseInFrame(
-        #     reference_frame=CAMERA_NAME,
-        #     pose=geometry.center,
-        # )
+
+        # detection = detections[0]  # just pick the first one for this demo
+        # main_part_of_detection = detection.transforms[0]
+
+        # print(f"Detected: {main_part_of_detection.physical_object.label}")
+
+        # # The detected pose is already in the cam-1 frame; hand it to motion.move as-is.
+        # obj_in_cam = main_part_of_detection.pose_in_observer_frame
         # print(f"obj_in_cam: {obj_in_cam}")
 
         # TODO 6: compute the approach pose and the grasp descent (Phase 5.6).
@@ -138,7 +137,6 @@ async def main() -> None:
         # That avoids the wrist-mounted camera frame shifting once the arm moves
         # for the approach. Fill in the remaining descent, as a positive value:
         # grasp_distance = ___   # TODO: (APPROACH_MM - GRIPPER_LENGTH_MM) as a positive mm value
-
         # TODO 7: run the full perception-guided pick loop (Phase 5.6).
         # Hybrid approach: motion.move for the pick (Cartesian precision),
         # arm-position-saver switches for the place (pre-measured, reliable).
@@ -149,7 +147,7 @@ async def main() -> None:
         #     destination=PoseInFrame(reference_frame=CAMERA_NAME, pose=approach_pose),
         # )
         # await gripper.open()
-        #
+        
         # # Descend the remaining distance straight down in the gripper's frame.
         # await motion.move(
         #     component_name=GRIPPER_NAME,

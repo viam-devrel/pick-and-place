@@ -98,20 +98,18 @@ async def pick_and_place(
 
     # 2. Detect. vision-segment fuses the 2D shape detections with depth into
     #    3D objects, each with a point cloud and a label.
-    objects = await vision.get_object_point_clouds(CAMERA_NAME)
-    if not objects:
+    detections = await vision.get_detections_3d(CAMERA_NAME)
+    if not detections:
         print("No objects detected")
         return False
 
-    # Largest object by point-cloud byte size (a proxy for point count).
-    # point_cloud is raw PCD bytes, so use len(point_cloud), not .size.
-    obj = max(objects, key=lambda o: len(o.point_cloud))
-    geometry = obj.geometries.geometries[0]
-    label = geometry.label
-    print(f"Detected: {label}")
+    detection = detections[0]  # just pick the first one for this demo
+    main_part_of_detection = detection.transforms[0]
 
-    # 3. Tag the detected pose with the camera frame; motion.move resolves it.
-    obj_in_cam = PoseInFrame(reference_frame=CAMERA_NAME, pose=geometry.center)
+    print(f"Detected: {main_part_of_detection.physical_object.label}")
+
+    # 3. The detected pose is already in the cam-1 frame; hand it to motion.move as-is.
+    obj_in_cam = main_part_of_detection.pose_in_observer_frame
 
     # 4. Derive the approach pose from the object center, in the camera frame.
     #    cam-1 is wrist-mounted, but the approach move is resolved from the
